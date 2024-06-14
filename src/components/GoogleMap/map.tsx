@@ -10,6 +10,7 @@ import {
 import PoiMarkers from './poi-marker';
 import { Poi } from '../../types';
 import { CustomMapControl } from './map-control';
+import MapHandler from './map-handler';
 
 const locations: Poi[] = [
 	{
@@ -32,21 +33,15 @@ const GoogleMap = () => {
 					defaultZoom={13}
 					defaultCenter={{ lat: 33.860664, lng: -118.4009608 }}
 					className="h-[80vh] w-full"
-					// onCameraChanged={(ev: MapCameraChangedEvent) =>
-					//   console.log(
-					//     "camera changed:",
-					//     ev.detail.center,
-					//     "zoom:",
-					//     ev.detail.zoom
-					//   )
-					// }
+					disableDefaultUI={true}
 				>
-					<PoiMarkers pois={locations} />
+					{/* <PoiMarkers pois={locations} /> */}
 				</Map>
 				<CustomMapControl
 					controlPosition={ControlPosition.TOP_CENTER}
 					onPlaceSelect={setSelectedPlace}
 				/>
+				<MapHandler place={selectedPlace} />
 			</div>
 		</APIProvider>
 	);

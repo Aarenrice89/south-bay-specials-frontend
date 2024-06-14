@@ -69,6 +69,39 @@
       { "ts": "never", "tsx": "never" }
     ],
     "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
-    "import/no-relative-packages": "error"
+    "import/no-relative-packages": "error",
+    "import/order": [
+      "error",
+      {
+        "warnOnUnassignedImports": true,
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          ["index", "object", "unknown"],
+          "type"
+        ],
+        "pathGroups": [
+          {"pattern": "react", "group": "external", "position": "before"}
+        ],
+        "pathGroupsExcludedImportTypes": ["react"]
+      }
+    ],
+    "import/named": "off",
+    "@typescript-eslint/consistent-type-exports": [
+      "error",
+      {"fixMixedExportsWithInlineTypeSpecifier": true}
+    ],
+    "@typescript-eslint/consistent-type-imports": [
+      "error",
+      {"prefer": "type-imports", "fixStyle": "inline-type-imports"}
+    ],
+    "@typescript-eslint/no-empty-interface": "off",
+    "react-hooks/rules-of-hooks": "error",
+    "tailwindcss/enforces-shorthand": "error",
+    "tailwindcss/no-contradicting-classname": "error",
+    "tailwindcss/enforces-negative-arbitrary-values": "error"
   }
 }
