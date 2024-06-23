@@ -24,6 +24,16 @@ interface Props {
 	onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void;
 }
 
+interface selectedLocationProps {
+	name?: string;
+	address?: string;
+	phone?: string;
+	website?: string;
+	placeId?: string;
+	googleUrl?: string;
+	geometry?: any;
+}
+
 const Dropdown = styled(Paper)({
 	position: 'absolute',
 	top: '100%',
@@ -67,7 +77,9 @@ export const AutocompleteCustom = ({ onPlaceSelect }: Props) => {
 	>([]);
 
 	const [inputValue, setInputValue] = useState<string>('');
-	const [isDropdownOpen, setIsDropdownOpen] = useState(true);
+	const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(true);
+	const [selectedLocation, setSelectedLocation] =
+		useState<selectedLocationProps | null>(null);
 
 	useEffect(() => {
 		if (!places || !map) return;
@@ -112,7 +124,15 @@ export const AutocompleteCustom = ({ onPlaceSelect }: Props) => {
 
 			const detailRequestOptions = {
 				placeId,
-				fields: ['geometry', 'name', 'formatted_address'],
+				fields: [
+					'geometry',
+					'name',
+					'formatted_address',
+					'formatted_phone_number',
+					'website',
+					'place_id',
+					'url',
+				],
 				sessionToken,
 			};
 
@@ -128,49 +148,33 @@ export const AutocompleteCustom = ({ onPlaceSelect }: Props) => {
 							placeDetails.geometry.location &&
 							map
 						) {
+							// This doesnt seem to do anything
 							const { location } = placeDetails.geometry;
 							map.setCenter(location);
-							map.setZoom(15); // Adjust zoom level as needed
+							map.setZoom(15);
 						}
+						setInputValue(
+							placeDetails.name ? placeDetails.name : '',
+						);
+						setSelectedLocation({
+							name: placeDetails.name,
+							address: placeDetails.formatted_address,
+							phone: placeDetails.formatted_phone_number,
+							website: placeDetails.website,
+							placeId: placeDetails.place_id,
+							googleUrl: placeDetails.url,
+							geometry: placeDetails.geometry,
+						});
 					}
 				},
 			);
-
+			console.log('selectedLocation: ', selectedLocation);
 			setPredictionResults([]);
-			setInputValue('');
 			setIsDropdownOpen(false);
 			setSessionToken(new places.AutocompleteSessionToken());
 		},
 		[placesService, sessionToken, map, onPlaceSelect],
 	);
-
-	// const handleSuggestionClick = useCallback(
-	// 	(placeId: string) => {
-	// 		if (!places) return;
-
-	// 		const detailRequestOptions = {
-	// 			placeId,
-	// 			fields: ['geometry', 'name', 'formatted_address'],
-	// 			sessionToken,
-	// 		};
-
-	// 		const detailsRequestCallback = (
-	// 			placeDetails: google.maps.places.PlaceResult | null,
-	// 		) => {
-	// 			console.log(placeDetails);
-	// 			onPlaceSelect(placeDetails);
-	// 			setPredictionResults([]);
-	// 			setInputValue(placeDetails?.formatted_address ?? '');
-	// 			setSessionToken(new places.AutocompleteSessionToken());
-	// 		};
-
-	// 		placesService?.getDetails(
-	// 			detailRequestOptions,
-	// 			detailsRequestCallback,
-	// 		);
-	// 	},
-	// 	[onPlaceSelect, places, placesService, sessionToken],
-	// );
 
 	const handleClickOutside = useCallback((event: MouseEvent) => {
 		if (
@@ -205,6 +209,7 @@ export const AutocompleteCustom = ({ onPlaceSelect }: Props) => {
 				placeholder="Search Google Maps"
 				value={inputValue}
 				fullWidth
+				autoComplete="off"
 				onInput={(event: FormEvent<HTMLInputElement>) =>
 					onInputChange(event)
 				}

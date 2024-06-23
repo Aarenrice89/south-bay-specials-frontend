@@ -11,11 +11,16 @@ import PoiMarkers from './poi-marker';
 import { Poi } from '../../types';
 import { CustomMapControl } from './map-control';
 import MapHandler from './map-handler';
+import { Paper } from '@mui/material';
 
 const locations: Poi[] = [
 	{
 		key: 'American Junkie',
 		location: { lat: 33.86200633981369, lng: -118.40043937895398 },
+	},
+	{
+		key: 'Slice and Pint',
+		location: { lat: 33.92021438029151, lng: -118.4156467697085 },
 	},
 ];
 
@@ -27,7 +32,7 @@ const GoogleMap = () => {
 			apiKey={import.meta.env.VITE_GM_API_KEY}
 			onLoad={() => console.log('Maps API has loaded.')}
 		>
-			<div className="flex-grow">
+			<div className="flex-grow rounded-l-md overflow-hidden">
 				<Map
 					mapId={import.meta.env.VITE_GM_ID_KEY}
 					defaultZoom={13}
@@ -35,7 +40,7 @@ const GoogleMap = () => {
 					className="h-[80vh] w-full"
 					disableDefaultUI={true}
 				>
-					{/* <PoiMarkers pois={locations} /> */}
+					<PoiMarkers pois={locations} />
 				</Map>
 				<CustomMapControl
 					controlPosition={ControlPosition.TOP_CENTER}

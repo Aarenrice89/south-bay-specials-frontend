@@ -1,3 +1,64 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+	font-family: 'Lato';
+	src:
+		url('../fonts/lato-regular-webfont.woff2') format('woff2'),
+		url('../fonts/lato-regular-webfont.woff') format('woff');
+	font-weight: 400;
+	font-weight: 'normal' 'regular';
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Lato';
+	src:
+		url('../fonts/lato-bold-webfont.woff2') format('woff2'),
+		url('../fonts/lato-bold-webfont.woff') format('woff');
+	font-weight: 500 700;
+	font-weight: 'medium' 'bold';
+	font-style: normal;
+}
+
+html {
+	font-family: 'Lato';
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+a {
+	color: #0a71d0;
+	text-decoration: none;
+}
+
+body,
+html {
+	/* box-sizing: border-box; */
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
+
+/* Custom styles for MUI TextField */
+.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input {
+	padding: 10px 14px;
+}
+
+.css-1sumxir-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
+	color: #9e9e9e;
+}
+
+.css-1sumxir-MuiFormLabel-root-MuiInputLabel-root {
+	display: none;
+}
+
+.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input:focus {
+	outline: none;
+	box-shadow: none;
+}
+
+.CustomClearButton:hover {
+	background-color: inherit !important;
+}

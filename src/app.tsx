@@ -3,8 +3,10 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Button } from '@mui/material';
 import GoogleMap from './components/GoogleMap/map';
-import AddLocationModal from './components/AddLocationModal/add-location-modal';
-import './index.css';
+import SpecialDetailsForm from './components/SpecialDetailsForm/special-details';
+import AddLocationModal from './components/AddSpecialModal/add-special-modal';
+import GlobalWrapper from './components/global-wrapper';
+import './assets/styles/index.css';
 
 const App = () => {
 	const [open, setOpen] = useState<boolean>(false);
@@ -20,7 +22,11 @@ const App = () => {
 					Test me out
 				</Button>
 				<AddLocationModal open={open} setOpen={setOpen}>
-					<GoogleMap />
+					<div className="grid grid-cols-2 divide-x">
+						<GoogleMap />
+						{/* <div className="h-[80vh]">placeholder</div> */}
+						<SpecialDetailsForm />
+					</div>
 				</AddLocationModal>
 			</div>
 		</div>
@@ -34,7 +40,9 @@ export function renderToDom(container: HTMLElement) {
 
 	root.render(
 		<React.StrictMode>
-			<App />
+			<GlobalWrapper>
+				<App />
+			</GlobalWrapper>
 		</React.StrictMode>,
 	);
 }
