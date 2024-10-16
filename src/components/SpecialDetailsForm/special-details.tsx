@@ -3,142 +3,23 @@ import {
 	TextField,
 	Select,
 	MenuItem,
-	InputLabel,
 	FormControl,
+	FormLabel,
 	FormHelperText,
-	SelectChangeEvent,
-	Button,
 } from '@mui/material';
-import { FormEvent, useState, type ChangeEvent } from 'react';
-// import { RequestState } from '../../enums';
+
+import {
+	useForm,
+	Controller,
+	FormProvider,
+	useFormContext,
+} from 'react-hook-form';
 
 interface SelectProps {
 	value: string;
 	display: string;
 }
-
-const timeValueSelect: SelectProps[] = [
-	{ value: '00:00', display: '12:00 AM' },
-	{ value: '01:00', display: '01:00 AM' },
-	{ value: '02:00', display: '02:00 AM' },
-	{ value: '03:00', display: '03:00 AM' },
-	{ value: '04:00', display: '04:00 AM' },
-	{ value: '05:00', display: '05:00 AM' },
-	{ value: '06:00', display: '06:00 AM' },
-	{ value: '07:00', display: '07:00 AM' },
-	{ value: '08:00', display: '08:00 AM' },
-	{ value: '09:00', display: '09:00 AM' },
-	{ value: '10:00', display: '10:00 AM' },
-	{ value: '11:00', display: '11:00 AM' },
-	{ value: '12:00', display: '12:00 PM' },
-	{ value: '13:00', display: '01:00 PM' },
-	{ value: '14:00', display: '02:00 PM' },
-	{ value: '15:00', display: '03:00 PM' },
-	{ value: '16:00', display: '04:00 PM' },
-	{ value: '17:00', display: '05:00 PM' },
-	{ value: '18:00', display: '06:00 PM' },
-	{ value: '19:00', display: '07:00 PM' },
-	{ value: '20:00', display: '08:00 PM' },
-	{ value: '21:00', display: '09:00 PM' },
-	{ value: '22:00', display: '10:00 PM' },
-	{ value: '23:00', display: '11:00 PM' },
-];
-
-const DayOfWeek: SelectProps[] = [
-	{ value: 'Monday', display: 'Monday' },
-	{ value: 'Tuesday', display: 'Tuesday' },
-	{ value: 'Wednesday', display: 'Wednesday' },
-	{ value: 'Thursday', display: 'Thursday' },
-	{ value: 'Friday', display: 'Friday' },
-	{ value: 'Saturday', display: 'Saturday' },
-	{ value: 'Sunday', display: 'Sunday' },
-];
-
-type timeValues =
-	| '00:00'
-	| '01:00'
-	| '02:00'
-	| '03:00'
-	| '04:00'
-	| '05:00'
-	| '06:00'
-	| '07:00'
-	| '08:00'
-	| '09:00'
-	| '10:00'
-	| '11:00'
-	| '12:00'
-	| '13:00'
-	| '14:00'
-	| '15:00'
-	| '16:00'
-	| '17:00'
-	| '18:00'
-	| '19:00'
-	| '20:00'
-	| '21:00'
-	| '22:00'
-	| '23:00';
-
-interface FormValueProps {
-	name: string;
-	description: string;
-	limitations: string | null;
-	dayOfWeek:
-		| 'Monday'
-		| 'Tuesday'
-		| 'Wednesday'
-		| 'Thursday'
-		| 'Friday'
-		| 'Saturday'
-		| 'Sunday';
-	startTime: timeValues;
-	endTime: timeValues;
-}
-
-const defaultFormValues: FormValueProps = {
-	name: '',
-	description: '',
-	limitations: null,
-	dayOfWeek: 'Monday',
-	startTime: '00:00',
-	endTime: '00:00',
-};
-
-interface InputTypes {
-	id: number;
-	name:
-		| 'name'
-		| 'description'
-		| 'limitations'
-		| 'dayOfWeek'
-		| 'startTime'
-		| 'endTime';
-	label: string;
-	required: boolean;
-	component: 'text' | 'select';
-	dataset?: typeof timeValueSelect | typeof DayOfWeek;
-	gridsizeProps: object;
-	componentProps?: object;
-}
-
-interface FormErrorValueProps {
-	name: boolean;
-	description: boolean;
-	limitations: boolean;
-	dayOfWeek: boolean;
-	startTime: boolean;
-	endTime: boolean;
-}
-
-const defaultFormErrorValues: FormErrorValueProps = {
-	name: true,
-	description: true,
-	limitations: false,
-	dayOfWeek: true,
-	startTime: true,
-	endTime: true,
-};
+import _ from 'lodash';
 
 const MenuProps = {
 	PaperProps: {
@@ -148,183 +29,220 @@ const MenuProps = {
 	},
 };
 
-export default function SpecialDetailsForm() {
-	const [values, setValues] = useState<FormValueProps>(defaultFormValues);
-	const [showErrors, setShowErrors] = useState<boolean>(true);
-	const [showErrorValues, setShowErrorValues] = useState<FormErrorValueProps>(
-		defaultFormErrorValues,
-	);
-	// const [submitReqState, setSubmitReqState] = useState<RequestState>(
-	// 	RequestState.NotInitiated,
-	// );
+interface FormValues {
+	name: string;
+	description: string;
+	limitations: string;
+	dayOfWeek: string;
+	startTime: string;
+	endTime: string;
+}
 
-	const handleChange =
-		(name: string) => (event: ChangeEvent<HTMLInputElement>) => {
-			if (event.target.value === '' || event.target.value === null) {
-				setShowErrorValues({ ...showErrorValues, [name]: true });
-			} else {
-				setShowErrorValues({ ...showErrorValues, [name]: false });
-			}
-			return setValues({ ...values, [name]: event.target.value });
-		};
+interface TextFormFieldProps {
+	name: keyof FormValues;
+	label: string;
+	requiredField: boolean;
+	componentProps?: object;
+}
 
-	const handleSelectChange =
-		(name: string) => (event: SelectChangeEvent<string>) => {
-			if (event.target.value !== null) {
-				setShowErrorValues({ ...showErrorValues, [name]: false });
-			}
-			return setValues({ ...values, [name]: event.target.value });
-		};
+interface SelectFormFieldProps {
+	name: keyof FormValues;
+	label: string;
+	requiredField: boolean;
+	dataset: SelectProps[];
+}
 
-	const hasErrors = (): boolean => {
-		return false;
-	};
-
-	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
-		// if (hasErrors()) {
-		// 	return setSubmitReqState(RequestState.Error);
-		// }
-	};
-
-	const inputs: InputTypes[] = [
-		{
-			id: 0,
-			name: 'name',
-			label: 'Name',
-			required: true,
-			component: 'text',
-			gridsizeProps: { xs: 12 },
-		},
-		{
-			id: 1,
-			name: 'description',
-			label: 'Description',
-			required: true,
-			component: 'text',
-			gridsizeProps: { xs: 12 },
-			componentProps: { multiline: true, rows: 3 },
-		},
-		{
-			id: 2,
-			name: 'limitations',
-			label: 'Limitations',
-			required: false,
-			component: 'text',
-			gridsizeProps: { xs: 12 },
-		},
-		{
-			id: 3,
-			name: 'dayOfWeek',
-			label: 'Day',
-			required: true,
-			component: 'select',
-			dataset: DayOfWeek,
-			gridsizeProps: { xs: 12 },
-		},
-		{
-			id: 4,
-			name: 'startTime',
-			label: 'Start time',
-			required: true,
-			component: 'select',
-			dataset: timeValueSelect,
-			gridsizeProps: { xs: 6 },
-		},
-		{
-			id: 5,
-			name: 'endTime',
-			label: 'End time',
-			required: true,
-			component: 'select',
-			dataset: timeValueSelect,
-			gridsizeProps: { xs: 6 },
-		},
-	];
-
-	console.log('Values', values);
+const TextFormField: React.FC<TextFormFieldProps> = ({
+	name,
+	label,
+	requiredField,
+	componentProps,
+}) => {
+	const {
+		control,
+		formState: { errors },
+	} = useFormContext<FormValues>();
 
 	return (
-		<>
-			<form
-				onSubmit={handleSubmit}
-				className=" pt-2 px-2 flex-grow rounded-r-md overflow-hidden"
-			>
-				<Grid container spacing={6}>
-					{inputs.map((input) => (
-						<Grid
-							item
-							{...input.gridsizeProps}
-							key={`${input.name}-input`}
-						>
-							{input.component === 'text' ? (
-								<>
-									<InputLabel
-										shrink={false}
-										error={
-											showErrors &&
-											showErrorValues[input.name]
-										}
-									>
-										{input.label}
-									</InputLabel>
-									<TextField
-										name={input.name}
-										fullWidth
-										onChange={handleChange(input.name)}
-										{...input?.componentProps}
-										autoComplete="off"
-										error={
-											showErrors &&
-											showErrorValues[input.name]
-										}
-										helperText={
-											showErrors &&
-											showErrorValues[input.name]
-												? `Must provide ${input.name}`
-												: ''
-										}
-									/>
-								</>
-							) : (
-								<FormControl
-									fullWidth
-									error={
-										showErrors &&
-										showErrorValues[input.name]
-									}
-								>
-									<InputLabel>{input.label}</InputLabel>
-									<Select
-										label={input.label}
-										onChange={handleSelectChange(
-											input.name,
-										)}
-										name={input.name}
-										MenuProps={MenuProps}
-										fullWidth
-									>
-										{input.dataset?.map((item) => (
-											<MenuItem value={item.value}>
-												{item.display}
-											</MenuItem>
-										))}
-									</Select>
-									{showErrors &&
-									showErrorValues[input.name] ? (
-										<FormHelperText>
-											Must select one
-										</FormHelperText>
-									) : (
-										<></>
-									)}
-								</FormControl>
-							)}
-						</Grid>
-					))}
-				</Grid>
-			</form>
-			{/* <Button onClick={handleSubmit}>Hit me</Button> */}
-		</>
+		<Controller
+			name={name}
+			control={control}
+			defaultValue=""
+			rules={requiredField ? { required: `${label} is required` } : {}}
+			render={({ field }) => (
+				<FormControl fullWidth>
+					<FormLabel error={!!errors[name]}>{label}</FormLabel>
+					<TextField
+						id={name}
+						className="mt-1"
+						onChange={field.onChange}
+						value={field.value}
+						inputRef={field.ref}
+						error={!!errors[name]}
+						autoComplete="off"
+						{...componentProps}
+					/>
+					<div style={{ minHeight: '1.5em' }}>
+						{errors[name] ? (
+							<FormHelperText error>
+								{errors[name]?.message}
+							</FormHelperText>
+						) : (
+							<FormHelperText>&nbsp;</FormHelperText>
+						)}
+					</div>
+				</FormControl>
+			)}
+		/>
 	);
-}
+};
+
+const SelectFormField: React.FC<SelectFormFieldProps> = ({
+	name,
+	label,
+	requiredField,
+	dataset,
+}) => {
+	const {
+		control,
+		formState: { errors },
+	} = useFormContext<FormValues>();
+
+	return (
+		<Controller
+			name={name}
+			control={control}
+			defaultValue=""
+			rules={requiredField ? { required: `${label} is required` } : {}}
+			render={({ field }) => (
+				<FormControl fullWidth>
+					<FormLabel error={!!errors[name]}>{label}</FormLabel>
+					<Select
+						onChange={field.onChange}
+						value={field.value}
+						inputRef={field.ref}
+						error={!!errors[name]}
+						name={name}
+						MenuProps={MenuProps}
+						fullWidth
+					>
+						{dataset.map((item) => (
+							<MenuItem
+								id={item.value}
+								key={item.value}
+								value={item.value}
+							>
+								{item.display}
+							</MenuItem>
+						))}
+					</Select>
+					<div className="min-h-[1.5em]">
+						{errors[name] ? (
+							<FormHelperText error>
+								{errors[name]?.message}
+							</FormHelperText>
+						) : (
+							<FormHelperText>&nbsp;</FormHelperText>
+						)}
+					</div>
+				</FormControl>
+			)}
+		/>
+	);
+};
+
+const getDayNames = (): SelectProps[] => {
+	const days = _.range(0, 7).map((day: number) => {
+		const date = new Date();
+		date.setDate(date.getDate() - date.getDay() + day);
+		const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+		return { value: dayName, display: dayName };
+	});
+	return days;
+};
+
+const formatTime = (hour: number, minute: number): string => {
+	const period = hour < 12 ? 'AM' : 'PM';
+	const formattedHour = hour % 12 === 0 ? 12 : hour % 12;
+	const formattedMinute = minute.toString().padStart(2, '0');
+	return `${formattedHour}:${formattedMinute} ${period}`;
+};
+
+const getTimeValueSelect = (): SelectProps[] => {
+	return _.flatMap(_.range(0, 24), (hour: number) => {
+		return _.range(0, 60, 60).map((minute: number) => {
+			const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+			const displayString = formatTime(hour, minute);
+			return { value: timeString, display: displayString };
+		});
+	});
+};
+
+const SpecialDetailsForm: React.FC = () => {
+	const methods = useForm<FormValues>();
+
+	const onSubmit = (data: FormValues) => {
+		console.log('Form submitted:', data);
+	};
+
+	return (
+		<FormProvider {...methods}>
+			<form
+				onSubmit={methods.handleSubmit(onSubmit)}
+				className="pt-2 px-2 flex-grow rounded-r-md overflow-hidden"
+			>
+				<Grid container spacing={2}>
+					<Grid item xs={12}>
+						<TextFormField
+							name="name"
+							label="Special Name"
+							requiredField={true}
+						/>
+					</Grid>
+					<Grid item xs={12}>
+						<TextFormField
+							name="description"
+							label="Description"
+							requiredField={true}
+							componentProps={{ multiline: true, rows: 3 }}
+						/>
+					</Grid>
+					<Grid item xs={12}>
+						<TextFormField
+							name="limitations"
+							label="Limitations"
+							requiredField={false}
+						/>
+					</Grid>
+					<Grid item xs={12}>
+						<SelectFormField
+							name="dayOfWeek"
+							label="Day"
+							requiredField={true}
+							dataset={getDayNames()}
+						/>
+					</Grid>
+					<Grid item xs={6}>
+						<SelectFormField
+							name="startTime"
+							label="Start Time"
+							requiredField={false}
+							dataset={getTimeValueSelect()}
+						/>
+					</Grid>
+					<Grid item xs={6}>
+						<SelectFormField
+							name="endTime"
+							label="End Time"
+							requiredField={false}
+							dataset={getTimeValueSelect()}
+						/>
+					</Grid>
+				</Grid>
+				<button type="submit">Submit</button>
+			</form>
+		</FormProvider>
+	);
+};
+
+export default SpecialDetailsForm;
