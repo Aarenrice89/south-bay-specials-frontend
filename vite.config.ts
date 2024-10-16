@@ -7,21 +7,6 @@ import basicSsl from '@vitejs/plugin-basic-ssl';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import pluginChecker from 'vite-plugin-checker';
 
-// export default defineConfig(({mode}) => {
-//   dotenv.config({path: path.resolve(__dirname, './.env')});
-//   process.env = { ...process.env, ...loadEnv(mode, process.cwd())};
-//   // const {GOOGLE_MAPS_API_KEY = ''} = loadEnv(mode, process.cwd(), '');
-//   // const {GOOGLE_MAPS_ID_KEY = ''} = loadEnv(mode, process.cwd(), '');
-
-//   return {
-//     plugins: [react()],
-//     // define: {
-//       //   'process.env.GOOGLE_MAPS_API_KEY': JSON.stringify(GOOGLE_MAPS_API_KEY),
-//       //   'process.env.GOOGLE_MAPS_ID_KEY': JSON.stringify(GOOGLE_MAPS_ID_KEY)
-//       // },
-//   };
-// });
-
 const envExists = fs.existsSync('./.env');
 
 const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf-8'));
@@ -62,7 +47,7 @@ export default ({ mode }: { mode: string }) => {
 			// allow access from other devices on the same network
 			host: true,
 			// enable HTTPS
-			https: HTTPS,
+			// https: HTTPS,
 		},
 		preview: {
 			// open the browser when the server starts
@@ -70,7 +55,7 @@ export default ({ mode }: { mode: string }) => {
 			// use the specified PORT
 			port: PORT,
 			// enable HTTPS
-			https: HTTPS,
+			// https: HTTPS,
 		},
 		envPrefix: 'REACT_APP_',
 		build: {
