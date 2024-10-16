@@ -11,14 +11,11 @@ import {
 	Tooltip,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import AccountCircle from '@mui/icons-material/AccountCircle';
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 export default function HeaderBar() {
-	const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-		null,
-	);
+	const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
 	const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorElUser(event.currentTarget);

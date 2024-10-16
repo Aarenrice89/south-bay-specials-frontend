@@ -1,4 +1,4 @@
 export interface Poi {
-    key: string;
-    location: google.maps.LatLngLiteral;
+	key: string;
+	location: google.maps.LatLngLiteral;
 }

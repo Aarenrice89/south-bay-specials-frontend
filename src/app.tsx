@@ -1,14 +1,12 @@
-import { useState } from 'react';
-import React from 'react';
+import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Button } from '@mui/material';
-import GoogleMap from './components/GoogleMap/map';
-import SpecialDetailsForm from './components/SpecialDetailsForm/special-details';
+
 import AddLocationModal from './components/AddSpecialModal/add-special-modal';
 import GlobalWrapper from './components/global-wrapper';
 import './assets/styles/index.css';
 
-const App = () => {
+function App() {
 	const [open, setOpen] = useState<boolean>(false);
 
 	return (
@@ -21,17 +19,11 @@ const App = () => {
 				>
 					Test me out
 				</Button>
-				<AddLocationModal open={open} setOpen={setOpen}>
-					<div className="grid grid-cols-2 divide-x">
-						<GoogleMap />
-						{/* <div className="h-[80vh]">placeholder</div> */}
-						<SpecialDetailsForm />
-					</div>
-				</AddLocationModal>
+				<AddLocationModal open={open} setOpen={setOpen} />
 			</div>
 		</div>
 	);
-};
+}
 
 export default App;
 

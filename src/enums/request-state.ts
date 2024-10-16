@@ -3,6 +3,6 @@ declare enum RequestState {
 	Loading = 1,
 	Error = 2,
 	NoData = 3,
-	Ok = 3,
+	Ok = 4,
 }
 export default RequestState;

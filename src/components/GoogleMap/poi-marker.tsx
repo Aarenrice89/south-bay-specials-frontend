@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 
 import {
 	useMap,
@@ -8,26 +8,29 @@ import {
 } from '@vis.gl/react-google-maps';
 
 import { MarkerClusterer } from '@googlemaps/markerclusterer';
-import type { Marker } from '@googlemaps/markerclusterer';
+// import type { Marker } from '@googlemaps/markerclusterer';
 
 // import { Circle } from "./circle";
-import { Poi } from '../../types';
+import { type Poi } from '../../types';
 
-const PoiMarkers = (props: { pois: Poi[] }) => {
+function PoiMarkers({ pois }: { pois: Poi[] }) {
 	const map = useMap();
 	// const [markers, setMarkers] = useState<{ [key: string]: Marker }>({});
 	const clusterer = useRef<MarkerClusterer | null>(null);
 	const [infowindowOpen, setInfowindowOpen] = useState<boolean>(true);
 	const [markerRef, marker] = useAdvancedMarkerRef();
 
-	const handleClick = useCallback((ev: google.maps.MapMouseEvent) => {
-		if (!map) return;
-		if (!ev.latLng) return;
-		console.log('marker clicked: ', ev.latLng.toString());
-		map.panTo(ev.latLng);
-		// setCircleCenter(ev.latLng);
-		setInfowindowOpen(!infowindowOpen);
-	}, []);
+	const handleClick = useCallback(
+		(ev: google.maps.MapMouseEvent) => {
+			if (!map) return;
+			if (!ev.latLng) return;
+			console.log('marker clicked: ', ev.latLng.toString());
+			map.panTo(ev.latLng);
+			// setCircleCenter(ev.latLng);
+			setInfowindowOpen(!infowindowOpen);
+		},
+		[infowindowOpen, map],
+	);
 
 	// Initialize MarkerClusterer, if the map has changed
 	useEffect(() => {
@@ -39,14 +42,14 @@ const PoiMarkers = (props: { pois: Poi[] }) => {
 
 	return (
 		<>
-			{props.pois.map((poi: Poi) => (
+			{pois.map((poi: Poi) => (
 				<>
 					<AdvancedMarker
 						key={poi.key}
 						position={poi.location}
 						ref={markerRef}
 						// ref={(marker) => setMarkerRef(marker, poi.key)}
-						clickable={true}
+						clickable
 						onClick={handleClick}
 						// title={poi.key}
 					>
@@ -69,6 +72,6 @@ const PoiMarkers = (props: { pois: Poi[] }) => {
 			))}
 		</>
 	);
-};
+}
 
 export default PoiMarkers;

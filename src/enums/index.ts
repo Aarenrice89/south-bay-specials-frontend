@@ -1,3 +1,3 @@
-import RequestState from "./request-state";
+import RequestState from './request-state';
 
-export {RequestState};
+export default RequestState;

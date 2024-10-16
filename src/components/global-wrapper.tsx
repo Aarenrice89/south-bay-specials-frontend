@@ -1,5 +1,5 @@
+import React, { type ReactNode } from 'react';
 import { Box, Container } from '@mui/material';
-import { ReactNode } from 'react';
 import HeaderBar from './layout/header';
 
 function GlobalWrapper({ children }: { children: ReactNode }) {
