@@ -1,3 +1,4 @@
+import React from 'react';
 import {
 	Grid,
 	TextField,
@@ -8,18 +9,13 @@ import {
 	FormHelperText,
 } from '@mui/material';
 
-import {
-	useForm,
-	Controller,
-	FormProvider,
-	useFormContext,
-} from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
+import _ from 'lodash';
 
 interface SelectProps {
 	value: string;
 	display: string;
 }
-import _ from 'lodash';
 
 const MenuProps = {
 	PaperProps: {
@@ -52,12 +48,12 @@ interface SelectFormFieldProps {
 	dataset: SelectProps[];
 }
 
-const TextFormField: React.FC<TextFormFieldProps> = ({
+function TextFormField({
 	name,
 	label,
 	requiredField,
 	componentProps,
-}) => {
+}: TextFormFieldProps) {
 	const {
 		control,
 		formState: { errors },
@@ -95,14 +91,14 @@ const TextFormField: React.FC<TextFormFieldProps> = ({
 			)}
 		/>
 	);
-};
+}
 
-const SelectFormField: React.FC<SelectFormFieldProps> = ({
+function SelectFormField({
 	name,
 	label,
 	requiredField,
 	dataset,
-}) => {
+}: SelectFormFieldProps) {
 	const {
 		control,
 		formState: { errors },
@@ -149,7 +145,7 @@ const SelectFormField: React.FC<SelectFormFieldProps> = ({
 			)}
 		/>
 	);
-};
+}
 
 const getDayNames = (): SelectProps[] => {
 	const days = _.range(0, 7).map((day: number) => {
@@ -178,71 +174,64 @@ const getTimeValueSelect = (): SelectProps[] => {
 	});
 };
 
-const SpecialDetailsForm: React.FC = () => {
-	const methods = useForm<FormValues>();
-
-	const onSubmit = (data: FormValues) => {
-		console.log('Form submitted:', data);
-	};
-
+function SpecialDetailsForm() {
 	return (
-		<FormProvider {...methods}>
-			<form
-				onSubmit={methods.handleSubmit(onSubmit)}
-				className="pt-2 px-2 flex-grow rounded-r-md overflow-hidden"
-			>
-				<Grid container spacing={2}>
-					<Grid item xs={12}>
-						<TextFormField
-							name="name"
-							label="Special Name"
-							requiredField={true}
-						/>
-					</Grid>
-					<Grid item xs={12}>
-						<TextFormField
-							name="description"
-							label="Description"
-							requiredField={true}
-							componentProps={{ multiline: true, rows: 3 }}
-						/>
-					</Grid>
-					<Grid item xs={12}>
-						<TextFormField
-							name="limitations"
-							label="Limitations"
-							requiredField={false}
-						/>
-					</Grid>
-					<Grid item xs={12}>
-						<SelectFormField
-							name="dayOfWeek"
-							label="Day"
-							requiredField={true}
-							dataset={getDayNames()}
-						/>
-					</Grid>
-					<Grid item xs={6}>
-						<SelectFormField
-							name="startTime"
-							label="Start Time"
-							requiredField={false}
-							dataset={getTimeValueSelect()}
-						/>
-					</Grid>
-					<Grid item xs={6}>
-						<SelectFormField
-							name="endTime"
-							label="End Time"
-							requiredField={false}
-							dataset={getTimeValueSelect()}
-						/>
-					</Grid>
+		<div className="pt-2 px-2 flex-grow rounded-r-md overflow-hidden">
+			<Grid container spacing={2}>
+				<Grid item xs={12}>
+					<TextFormField
+						name="name"
+						label="Special Name"
+						requiredField
+					/>
 				</Grid>
-				<button type="submit">Submit</button>
-			</form>
-		</FormProvider>
+				<Grid item xs={12}>
+					<TextFormField
+						name="description"
+						label="Description"
+						requiredField
+						componentProps={{ multiline: true, rows: 3 }}
+					/>
+				</Grid>
+				<Grid item xs={12}>
+					<TextFormField
+						name="limitations"
+						label="Limitations"
+						requiredField={false}
+					/>
+				</Grid>
+				<Grid item xs={12}>
+					<SelectFormField
+						name="dayOfWeek"
+						label="Day"
+						requiredField
+						dataset={getDayNames()}
+					/>
+				</Grid>
+				<Grid item xs={6}>
+					<SelectFormField
+						name="startTime"
+						label="Start Time"
+						requiredField={false}
+						dataset={getTimeValueSelect()}
+					/>
+				</Grid>
+				<Grid item xs={6}>
+					<SelectFormField
+						name="endTime"
+						label="End Time"
+						requiredField={false}
+						dataset={getTimeValueSelect()}
+					/>
+				</Grid>
+			</Grid>
+		</div>
 	);
+}
+
+// Provide default props
+TextFormField.defaultProps = {
+	componentProps: {},
 };
 
 export default SpecialDetailsForm;

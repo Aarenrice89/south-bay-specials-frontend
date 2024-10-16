@@ -2,7 +2,7 @@ import React, {
 	useEffect,
 	useState,
 	useCallback,
-	FormEvent,
+	type FormEvent,
 	useRef,
 } from 'react';
 import { useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
@@ -31,7 +31,7 @@ interface selectedLocationProps {
 	website?: string;
 	placeId?: string;
 	googleUrl?: string;
-	geometry?: any;
+	geometry?: google.maps.places.PlaceGeometry;
 }
 
 const Dropdown = styled(Paper)({
@@ -55,7 +55,7 @@ const ListItemStyled = styled(ListItem)({
 	},
 });
 
-export const AutocompleteCustom = ({ onPlaceSelect }: Props) => {
+function AutocompleteCustom({ onPlaceSelect }: Props) {
 	const map = useMap();
 	const places = useMapsLibrary('places');
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -88,17 +88,25 @@ export const AutocompleteCustom = ({ onPlaceSelect }: Props) => {
 		setPlacesService(new places.PlacesService(map));
 		setSessionToken(new places.AutocompleteSessionToken());
 
-		return () => setAutocompleteService(null);
+		// return () => setAutocompleteService(null);
+
+		// Cleanup function
+		// eslint-disable-next-line consistent-return
+		return () => {
+			setAutocompleteService(null);
+			setPlacesService(null);
+			setSessionToken(undefined);
+		};
 	}, [map, places]);
 
 	const fetchPredictions = useCallback(
-		async (inputValue: string) => {
-			if (!autocompleteService || !inputValue) {
+		async (input: string) => {
+			if (!autocompleteService || !input) {
 				setPredictionResults([]);
 				return;
 			}
 
-			const request = { input: inputValue, sessionToken };
+			const request = { input, sessionToken };
 			const response =
 				await autocompleteService.getPlacePredictions(request);
 
@@ -130,7 +138,7 @@ export const AutocompleteCustom = ({ onPlaceSelect }: Props) => {
 					'formatted_address',
 					'formatted_phone_number',
 					'website',
-					'place_id',
+					'placeId',
 					'url',
 				],
 				sessionToken,
@@ -173,7 +181,14 @@ export const AutocompleteCustom = ({ onPlaceSelect }: Props) => {
 			setIsDropdownOpen(false);
 			setSessionToken(new places.AutocompleteSessionToken());
 		},
-		[placesService, sessionToken, map, onPlaceSelect],
+		[
+			placesService,
+			sessionToken,
+			map,
+			onPlaceSelect,
+			places,
+			selectedLocation,
+		],
 	);
 
 	const handleClickOutside = useCallback((event: MouseEvent) => {
@@ -241,27 +256,31 @@ export const AutocompleteCustom = ({ onPlaceSelect }: Props) => {
 			{isDropdownOpen && predictionResults.length > 0 && (
 				<Dropdown className="overflow-x-hidden">
 					<List>
-						{predictionResults.map(({ place_id, description }) => {
-							return (
-								<ListItemStyled
-									key={place_id}
-									onClick={() =>
-										handleSuggestionClick(place_id)
-									}
-									className="text-xs"
-								>
-									<Typography
-										variant="body2"
-										className="overflow-hidden truncate"
+						{predictionResults.map(
+							({ place_id: placeId, description }) => {
+								return (
+									<ListItemStyled
+										key={placeId}
+										onClick={() =>
+											handleSuggestionClick(placeId)
+										}
+										className="text-xs"
 									>
-										{description}
-									</Typography>
-								</ListItemStyled>
-							);
-						})}
+										<Typography
+											variant="body2"
+											className="overflow-hidden truncate"
+										>
+											{description}
+										</Typography>
+									</ListItemStyled>
+								);
+							},
+						)}
 					</List>
 				</Dropdown>
 			)}
 		</Box>
 	);
-};
+}
+
+export default AutocompleteCustom;

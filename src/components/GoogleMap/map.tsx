@@ -1,17 +1,11 @@
 import React, { useState } from 'react';
 
-import {
-	APIProvider,
-	Map,
-	MapCameraChangedEvent,
-	ControlPosition,
-} from '@vis.gl/react-google-maps';
+import { APIProvider, Map, ControlPosition } from '@vis.gl/react-google-maps';
 
+import { type Poi } from '../../types';
 import PoiMarkers from './poi-marker';
-import { Poi } from '../../types';
-import { CustomMapControl } from './map-control';
+import CustomMapControl from './map-control';
 import MapHandler from './map-handler';
-import { Paper } from '@mui/material';
 
 const locations: Poi[] = [
 	{
@@ -24,32 +18,47 @@ const locations: Poi[] = [
 	},
 ];
 
-const GoogleMap = () => {
+interface GoogleMapProps {
+	onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void;
+}
+
+function GoogleMap({ onPlaceSelect }: GoogleMapProps) {
 	const [selectedPlace, setSelectedPlace] =
 		useState<google.maps.places.PlaceResult | null>(null);
+
+	const handlePlaceSelect = (
+		place: google.maps.places.PlaceResult | null,
+	) => {
+		setSelectedPlace(place);
+		onPlaceSelect(place);
+	};
+
+	console.log('ENV', import.meta.env);
+	console.log('API key', import.meta.env.REACT_APP_MAPS_API_KEY);
+	console.log('ID key', import.meta.env.REACT_APP_MAPS_ID_KEY);
 	return (
 		<APIProvider
-			apiKey={import.meta.env.VITE_GM_API_KEY}
+			apiKey={import.meta.env.REACT_APP_MAPS_API_KEY}
 			onLoad={() => console.log('Maps API has loaded.')}
 		>
 			<div className="flex-grow rounded-l-md overflow-hidden">
 				<Map
-					mapId={import.meta.env.VITE_GM_ID_KEY}
+					mapId={import.meta.env.REACT_APP_MAPS_ID_KEY}
 					defaultZoom={13}
 					defaultCenter={{ lat: 33.860664, lng: -118.4009608 }}
 					className="h-[80vh] w-full"
-					disableDefaultUI={true}
+					disableDefaultUI
 				>
 					<PoiMarkers pois={locations} />
 				</Map>
 				<CustomMapControl
 					controlPosition={ControlPosition.TOP_CENTER}
-					onPlaceSelect={setSelectedPlace}
+					onPlaceSelect={handlePlaceSelect}
 				/>
 				<MapHandler place={selectedPlace} />
 			</div>
 		</APIProvider>
 	);
-};
+}
 
 export default GoogleMap;

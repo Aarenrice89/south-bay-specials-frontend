@@ -1,0 +1,73 @@
+{
+	"ignorePatterns": ["*.css", "*.svg", "*.config.js", "*.config.ts", "*.cjs"],
+	"plugins": [
+		"@typescript-eslint",
+		"lodash",
+		"tailwindcss",
+		"react",
+		"jsx-a11y",
+		"import",
+		"prettier",
+		"cypress",
+		"chai-friendly"
+	],
+	"extends": [
+		"plugin:react/recommended",
+		"plugin:@typescript-eslint/recommended",
+		"airbnb",
+		"airbnb/hooks",
+		"plugin:import/typescript",
+		"plugin:prettier/recommended",
+		"plugin:cypress/recommended",
+		"plugin:jsx-a11y/strict",
+		"plugin:chai-friendly/recommended"
+	],
+	"rules": {
+		"no-console": [
+			"warn",
+			{
+				"allow": [
+					"clear",
+					"info",
+					"error",
+					"warn",
+					"dir",
+					"trace",
+					"log",
+					"debug"
+				]
+			}
+		],
+		"no-alert": "error",
+		"react/jsx-filename-extension": ["error", { "extensions": [".tsx"] }],
+		"react/prop-types": [2, { "ignore": ["children"] }],
+		"react/jsx-props-no-spreading": "off",
+		"no-unused-vars": "off",
+		"@typescript-eslint/no-unused-vars": ["error"],
+		"no-shadow": "off",
+		"@typescript-eslint/no-shadow": ["error"],
+		"max-len": [
+			"error",
+			{
+				"code": 120,
+				"ignoreComments": true
+			}
+		]
+	},
+	"overrides": [
+		{
+			"files": ["*.ts", "*.tsx"],
+			"parser": "@typescript-eslint/parser",
+			"parserOptions": {
+				"project": "./tsconfig.json"
+			},
+			"rules": {
+				"@typescript-eslint/no-unused-vars": ["error"],
+				"@typescript-eslint/no-shadow": ["error"]
+			}
+		}
+	],
+	"linterOptions": {
+		"reportUnusedDisableDirectives": true
+	}
+}
