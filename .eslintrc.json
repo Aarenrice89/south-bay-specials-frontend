@@ -16,17 +16,7 @@
 		"import/resolver": { "typescript": {} }
 	},
 	"ignorePatterns": ["*.css", "*.svg", "*.config.js", "*.config.ts", "*.cjs"],
-	"plugins": [
-		"@typescript-eslint",
-		"lodash",
-		"tailwindcss",
-		"react",
-		"jsx-a11y",
-		"import",
-		"prettier",
-		"cypress",
-		"chai-friendly"
-	],
+	"plugins": ["@typescript-eslint", "lodash", "tailwindcss"],
 	"extends": [
 		"plugin:react/recommended",
 		"plugin:@typescript-eslint/recommended",
@@ -35,8 +25,9 @@
 		"plugin:import/typescript",
 		"plugin:prettier/recommended",
 		"plugin:cypress/recommended",
-		"plugin:jsx-a11y/strict",
-		"plugin:chai-friendly/recommended"
+		"plugin:eslint-plugin-jsx-a11y/strict",
+		"plugin:chai-friendly/recommended",
+		"plugin:@tanstack/eslint-plugin-query/recommended"
 	],
 	"globals": {
 		"google": "readonly"
@@ -45,26 +36,23 @@
 		"no-console": [
 			"warn",
 			{
-				"allow": [
-					"clear",
-					"info",
-					"error",
-					"warn",
-					"dir",
-					"trace",
-					"log",
-					"debug"
-				]
+				"allow": ["error", "warn"]
 			}
 		],
 		"no-alert": "error",
 		"react/jsx-filename-extension": ["error", { "extensions": [".tsx"] }],
 		"react/prop-types": [2, { "ignore": ["children"] }],
 		"react/jsx-props-no-spreading": "off",
+		"react/require-default-props": [
+			"error",
+			{ "functions": "defaultArguments" }
+		],
 		"no-unused-vars": "off",
-		"@typescript-eslint/no-unused-vars": ["error"],
+		"@typescript-eslint/no-unused-vars": "error",
+		"@typescript-eslint/no-empty-interface": "off",
+		"@typescript-eslint/no-empty-object-type": "off",
 		"no-shadow": "off",
-		"@typescript-eslint/no-shadow": ["error"],
+		"@typescript-eslint/no-shadow": "error",
 		"max-len": [
 			"error",
 			{
@@ -118,8 +106,22 @@
 			"error",
 			{ "prefer": "type-imports", "fixStyle": "inline-type-imports" }
 		],
-		"@typescript-eslint/no-empty-interface": "off",
 		"react-hooks/rules-of-hooks": "error",
+		"react-hooks/exhaustive-deps": "error",
+		"react/react-in-jsx-scope": "off",
+		"cypress/unsafe-to-chain-command": "warn",
+		"lodash/import-scope": ["error", "member"],
+		"lodash/callback-binding": "error",
+		"lodash/collection-method-value": "error",
+		"lodash/collection-return": "error",
+		"lodash/no-extra-args": "error",
+		"lodash/unwrap": "error",
+		"lodash/prefer-includes": "error",
+		"lodash/prefer-is-nil": "error",
+		"lodash/prefer-noop": "error",
+		"lodash/prefer-some": "error",
+		"lodash/prefer-startswith": "error",
+		"lodash/prefer-times": "error",
 		"tailwindcss/enforces-shorthand": "error",
 		"tailwindcss/no-contradicting-classname": "error",
 		"tailwindcss/enforces-negative-arbitrary-values": "error"

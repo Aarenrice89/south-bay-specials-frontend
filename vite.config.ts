@@ -41,21 +41,27 @@ export default ({ mode }: { mode: string }) => {
 		],
 		server: {
 			// open the browser when the server starts
-			open: `https://web.south-bay-specials.localhost:${PORT}`,
+			open:
+				PORT === 3000
+					? `https://web.south-bay-specials.localhost:${PORT}`
+					: 'https://web.south-bay-specials.localhost',
 			// use the specified PORT
 			port: PORT,
 			// allow access from other devices on the same network
 			host: true,
 			// enable HTTPS
-			// https: HTTPS,
+			https: HTTPS,
 		},
 		preview: {
 			// open the browser when the server starts
-			open: `https://web.south-bay-specials.localhost:${PORT}`,
+			open:
+				PORT === 3000
+					? `https://web.south-bay-specials.localhost:${PORT}`
+					: 'https://web.south-bay-specials.localhost',
 			// use the specified PORT
 			port: PORT,
 			// enable HTTPS
-			// https: HTTPS,
+			https: HTTPS,
 		},
 		envPrefix: 'REACT_APP_',
 		build: {

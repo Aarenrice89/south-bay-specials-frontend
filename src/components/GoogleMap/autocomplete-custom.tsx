@@ -176,6 +176,7 @@ function AutocompleteCustom({ onPlaceSelect }: Props) {
 					}
 				},
 			);
+			// eslint-disable-next-line no-console
 			console.log('selectedLocation: ', selectedLocation);
 			setPredictionResults([]);
 			setIsDropdownOpen(false);

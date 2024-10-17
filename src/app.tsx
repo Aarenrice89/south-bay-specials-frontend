@@ -5,9 +5,15 @@ import { Button } from '@mui/material';
 import AddLocationModal from './components/AddSpecialModal/add-special-modal';
 import GlobalWrapper from './components/global-wrapper';
 import './assets/styles/index.css';
+import QueryClientProvider from './providers/QueryClientProviders';
 
 function App() {
 	const [open, setOpen] = useState<boolean>(false);
+
+	// const { data: testData, status } = useQuery({
+	// 	queryKey: ['ping'],
+	// 	queryFn: () => getTest().then(({ data }) => data),
+	// });
 
 	return (
 		<div className="flex h-screen flex-col">
@@ -33,7 +39,9 @@ export function renderToDom(container: HTMLElement) {
 	root.render(
 		<React.StrictMode>
 			<GlobalWrapper>
-				<App />
+				<QueryClientProvider>
+					<App />
+				</QueryClientProvider>
 			</GlobalWrapper>
 		</React.StrictMode>,
 	);
