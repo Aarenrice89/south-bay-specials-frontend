@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 
 import { Controller, useFormContext } from 'react-hook-form';
-import _ from 'lodash';
+import { flatMap, range } from 'lodash';
 
 interface SelectProps {
 	value: string;
@@ -52,7 +52,7 @@ function TextFormField({
 	name,
 	label,
 	requiredField,
-	componentProps,
+	componentProps = {},
 }: TextFormFieldProps) {
 	const {
 		control,
@@ -148,7 +148,7 @@ function SelectFormField({
 }
 
 const getDayNames = (): SelectProps[] => {
-	const days = _.range(0, 7).map((day: number) => {
+	const days = range(0, 7).map((day: number) => {
 		const date = new Date();
 		date.setDate(date.getDate() - date.getDay() + day);
 		const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
@@ -165,8 +165,8 @@ const formatTime = (hour: number, minute: number): string => {
 };
 
 const getTimeValueSelect = (): SelectProps[] => {
-	return _.flatMap(_.range(0, 24), (hour: number) => {
-		return _.range(0, 60, 60).map((minute: number) => {
+	return flatMap(range(0, 24), (hour: number) => {
+		return range(0, 60, 60).map((minute: number) => {
 			const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
 			const displayString = formatTime(hour, minute);
 			return { value: timeString, display: displayString };
@@ -229,9 +229,6 @@ function SpecialDetailsForm() {
 	);
 }
 
-// Provide default props
-TextFormField.defaultProps = {
-	componentProps: {},
-};
+// Removed defaultProps as default values are set in the function parameter destructuring
 
 export default SpecialDetailsForm;

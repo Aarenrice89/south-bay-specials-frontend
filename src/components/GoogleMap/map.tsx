@@ -33,12 +33,10 @@ function GoogleMap({ onPlaceSelect }: GoogleMapProps) {
 		onPlaceSelect(place);
 	};
 
-	console.log('ENV', import.meta.env);
-	console.log('API key', import.meta.env.REACT_APP_MAPS_API_KEY);
-	console.log('ID key', import.meta.env.REACT_APP_MAPS_ID_KEY);
 	return (
 		<APIProvider
 			apiKey={import.meta.env.REACT_APP_MAPS_API_KEY}
+			// eslint-disable-next-line no-console
 			onLoad={() => console.log('Maps API has loaded.')}
 		>
 			<div className="flex-grow rounded-l-md overflow-hidden">

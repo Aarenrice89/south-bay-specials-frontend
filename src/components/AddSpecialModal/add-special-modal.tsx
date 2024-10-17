@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { useState, type Dispatch, type SetStateAction } from 'react';
 import { Button, Dialog, DialogContent, DialogTitle } from '@mui/material';
 
@@ -66,6 +67,10 @@ function AddLocationModal({ open, setOpen }: Props) {
 								<GoogleMap
 									onPlaceSelect={(place) => {
 										console.log('Place selected:', place);
+										console.log(
+											'selectedPlace:',
+											selectedPlace,
+										);
 										setSelectedPlace(place);
 										formMethods.setValue(
 											'selectedPlace',
