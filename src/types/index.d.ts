@@ -1,9 +1,10 @@
 export type {
 	PingResponse,
-	LocationResponse,
+	FormattedLocation,
 	LocationListResponse,
 	SpecialResponse,
 	SpecialListResponse,
+	NewSpecial,
 } from 'types/schemas';
 
 export interface Poi {

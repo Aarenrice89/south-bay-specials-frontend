@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { locationSchema } from './locationSchema';
 
 const dayOfWeek = [
 	'Monday',
@@ -48,8 +49,19 @@ export const specialSchema = z.object({
 	endTime: z.enum(time),
 });
 
+export const newSpecialSchema = z.object({
+	name: z.string(),
+	description: z.string(),
+	limitations: z.string().nullable(),
+	dayOfWeek: z.enum(dayOfWeek),
+	startTime: z.enum(time),
+	endTime: z.enum(time),
+	selectedPlace: locationSchema.nullable(),
+});
+
 export const specialListSchema = z.array(specialSchema);
 
+export interface NewSpecial extends z.infer<typeof newSpecialSchema> {}
 export interface SpecialResponse extends z.infer<typeof specialSchema> {}
 export interface SpecialListResponse
 	extends z.infer<typeof specialListSchema> {}

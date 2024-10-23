@@ -47,7 +47,7 @@ html {
 }
 
 .css-1sumxir-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
-	color: #9e9e9e;
+	color: transparent;
 }
 
 .css-1sumxir-MuiFormLabel-root-MuiInputLabel-root {
@@ -61,4 +61,12 @@ html {
 
 .CustomClearButton:hover {
 	background-color: inherit !important;
+}
+
+.gm-style-iw-c[aria-labelledby] {
+	padding: 0px !important;
+}
+
+.gm-style-iw-d {
+	overflow-y: hidden !important;
 }

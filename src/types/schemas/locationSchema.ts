@@ -1,18 +1,17 @@
 import { z } from 'zod';
 
 export const locationSchema = z.object({
-	id: z.number(),
-	name: z.string(),
-	address: z.string(),
-	city: z.string(),
-	state: z.string(),
-	country: z.string(),
-	zipcode: z.string(),
-	googleLink: z.string(),
+	name: z.string().nullable(),
+	address: z.string().nullable(),
+	latitude: z.number().nullable(),
+	longitude: z.number().nullable(),
+	phoneNumber: z.string().nullable(),
+	website: z.string().nullable(),
+	googlePlaceId: z.string().nullable(),
 });
 
 export const locationListSchema = z.array(locationSchema);
 
-export interface LocationResponse extends z.infer<typeof locationSchema> {}
+export interface FormattedLocation extends z.infer<typeof locationSchema> {}
 export interface LocationListResponse
 	extends z.infer<typeof locationListSchema> {}

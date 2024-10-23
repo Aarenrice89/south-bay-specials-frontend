@@ -1,42 +1,40 @@
-/* eslint-disable no-console */
-import React, { useState, type Dispatch, type SetStateAction } from 'react';
+import React, { type Dispatch, type SetStateAction } from 'react';
 import { Button, Dialog, DialogContent, DialogTitle } from '@mui/material';
-
 import { useForm, FormProvider } from 'react-hook-form';
 
-import GoogleMap from '../GoogleMap/map';
+import { postNewSpecial } from 'src/services/api/methods';
+import { type NewSpecial } from 'types';
+import useNewLocationContext from 'src/hooks/use-new-location-context';
+import GoogleMap from '../GoogleMap/new-location-map';
 import SpecialDetailsForm from '../SpecialDetailsForm/special-details';
 
 interface Props {
 	open: boolean;
 	setOpen: Dispatch<SetStateAction<boolean>>;
-	// children: React.ReactNode;
-}
-
-interface FormValues {
-	name: string;
-	description: string;
-	limitations: string;
-	dayOfWeek: string;
-	startTime: string;
-	endTime: string;
-	selectedPlace: google.maps.places.PlaceResult | null;
 }
 
 function AddLocationModal({ open, setOpen }: Props) {
-	const [selectedPlace, setSelectedPlace] =
-		useState<google.maps.places.PlaceResult | null>(null);
+	const { setSelectedPlace } = useNewLocationContext();
 
-	const formMethods = useForm<FormValues>({
+	const formMethods = useForm<NewSpecial>({
 		defaultValues: { selectedPlace: null },
 	});
 
-	const onSubmit = (data: FormValues) => {
-		console.log('Form submitted:', data);
+	const onSubmit = (data: NewSpecial) => {
+		if (!data.selectedPlace) {
+			formMethods.setError('selectedPlace', {
+				type: 'manual',
+				message: 'Location is required',
+			});
+			return;
+		}
+		postNewSpecial(data);
 	};
 
 	const handleClose = () => {
+		formMethods.reset();
 		setOpen(false);
+		setSelectedPlace(null);
 	};
 
 	return (
@@ -64,20 +62,7 @@ function AddLocationModal({ open, setOpen }: Props) {
 					>
 						<div className="w-full">
 							<div className="grid grid-cols-2 divide-x">
-								<GoogleMap
-									onPlaceSelect={(place) => {
-										console.log('Place selected:', place);
-										console.log(
-											'selectedPlace:',
-											selectedPlace,
-										);
-										setSelectedPlace(place);
-										formMethods.setValue(
-											'selectedPlace',
-											place,
-										);
-									}}
-								/>
+								<GoogleMap />
 								<SpecialDetailsForm />
 							</div>
 						</div>
