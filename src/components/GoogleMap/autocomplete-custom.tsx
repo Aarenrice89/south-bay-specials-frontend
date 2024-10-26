@@ -16,23 +16,13 @@ import {
 	IconButton,
 	Typography,
 	Box,
+	ClickAwayListener,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
-
-interface Props {
-	onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void;
-}
-
-interface selectedLocationProps {
-	name?: string;
-	address?: string;
-	phone?: string;
-	website?: string;
-	placeId?: string;
-	googleUrl?: string;
-	geometry?: google.maps.places.PlaceGeometry;
-}
+import { useFormContext } from 'react-hook-form';
+import { type NewSpecial, type FormattedLocation } from 'types';
+import useNewLocationContext from 'src/hooks/use-new-location-context';
 
 const Dropdown = styled(Paper)({
 	position: 'absolute',
@@ -48,6 +38,19 @@ const Dropdown = styled(Paper)({
 	overflowY: 'auto',
 });
 
+const transformPlaceKeys = (
+	place: google.maps.places.PlaceResult,
+): FormattedLocation => ({
+	name: place.name || null,
+	address: place.formatted_address || null,
+	phoneNumber: place.formatted_phone_number || null,
+	website: place.website || null,
+	googlePlaceId: place.place_id || '',
+	googleUrl: place.url || '',
+	latitude: place.geometry?.location?.lat() || 0,
+	longitude: place.geometry?.location?.lng() || 0,
+});
+
 const ListItemStyled = styled(ListItem)({
 	cursor: 'pointer',
 	'&:hover': {
@@ -55,10 +58,17 @@ const ListItemStyled = styled(ListItem)({
 	},
 });
 
-function AutocompleteCustom({ onPlaceSelect }: Props) {
+function AutocompleteCustom() {
 	const map = useMap();
 	const places = useMapsLibrary('places');
 	const containerRef = useRef<HTMLDivElement>(null);
+	const { setSelectedPlace, onPlaceSelect, inputValue, setInputValue } =
+		useNewLocationContext();
+	const {
+		formState: { errors },
+		clearErrors,
+		setValue,
+	} = useFormContext<NewSpecial>();
 
 	// https://developers.google.com/maps/documentation/javascript/reference/places-autocomplete-service#AutocompleteSessionToken
 	const [sessionToken, setSessionToken] =
@@ -76,10 +86,7 @@ function AutocompleteCustom({ onPlaceSelect }: Props) {
 		Array<google.maps.places.AutocompletePrediction>
 	>([]);
 
-	const [inputValue, setInputValue] = useState<string>('');
 	const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(true);
-	const [selectedLocation, setSelectedLocation] =
-		useState<selectedLocationProps | null>(null);
 
 	useEffect(() => {
 		if (!places || !map) return;
@@ -87,9 +94,6 @@ function AutocompleteCustom({ onPlaceSelect }: Props) {
 		setAutocompleteService(new places.AutocompleteService());
 		setPlacesService(new places.PlacesService(map));
 		setSessionToken(new places.AutocompleteSessionToken());
-
-		// return () => setAutocompleteService(null);
-
 		// Cleanup function
 		// eslint-disable-next-line consistent-return
 		return () => {
@@ -123,7 +127,7 @@ function AutocompleteCustom({ onPlaceSelect }: Props) {
 			fetchPredictions(value);
 			setIsDropdownOpen(true);
 		},
-		[fetchPredictions],
+		[fetchPredictions, setInputValue],
 	);
 
 	const handleSuggestionClick = useCallback(
@@ -138,7 +142,7 @@ function AutocompleteCustom({ onPlaceSelect }: Props) {
 					'formatted_address',
 					'formatted_phone_number',
 					'website',
-					'placeId',
+					'place_id',
 					'url',
 				],
 				sessionToken,
@@ -149,6 +153,11 @@ function AutocompleteCustom({ onPlaceSelect }: Props) {
 				(placeDetails: google.maps.places.PlaceResult | null) => {
 					if (placeDetails) {
 						onPlaceSelect(placeDetails);
+						setValue(
+							'selectedPlace',
+							transformPlaceKeys(placeDetails),
+						);
+						clearErrors('selectedPlace');
 
 						// Update map with new place details
 						if (
@@ -164,23 +173,13 @@ function AutocompleteCustom({ onPlaceSelect }: Props) {
 						setInputValue(
 							placeDetails.name ? placeDetails.name : '',
 						);
-						setSelectedLocation({
-							name: placeDetails.name,
-							address: placeDetails.formatted_address,
-							phone: placeDetails.formatted_phone_number,
-							website: placeDetails.website,
-							placeId: placeDetails.place_id,
-							googleUrl: placeDetails.url,
-							geometry: placeDetails.geometry,
-						});
 					}
 				},
 			);
-			// eslint-disable-next-line no-console
-			console.log('selectedLocation: ', selectedLocation);
 			setPredictionResults([]);
 			setIsDropdownOpen(false);
 			setSessionToken(new places.AutocompleteSessionToken());
+			onPlaceSelect(null);
 		},
 		[
 			placesService,
@@ -188,31 +187,24 @@ function AutocompleteCustom({ onPlaceSelect }: Props) {
 			map,
 			onPlaceSelect,
 			places,
-			selectedLocation,
+			clearErrors,
+			setValue,
+			setInputValue,
 		],
 	);
-
-	const handleClickOutside = useCallback((event: MouseEvent) => {
-		if (
-			containerRef.current &&
-			!containerRef.current.contains(event.target as Node)
-		) {
-			setIsDropdownOpen(false);
-		}
-	}, []);
 
 	const handleClear = () => {
 		setInputValue('');
 		setPredictionResults([]);
 		setIsDropdownOpen(false);
+		setSelectedPlace(null);
 	};
 
-	useEffect(() => {
-		document.addEventListener('mousedown', handleClickOutside);
-		return () => {
-			document.removeEventListener('mousedown', handleClickOutside);
-		};
-	}, [handleClickOutside]);
+	const handleClickAway = () => {
+		setIsDropdownOpen(false);
+	};
+
+	const name = 'selectedPlace';
 
 	return (
 		<Box
@@ -230,8 +222,10 @@ function AutocompleteCustom({ onPlaceSelect }: Props) {
 					onInputChange(event)
 				}
 				sx={{
-					border: 'none',
-					'& fieldset': { border: 'none' },
+					border: errors[name] ? '2px solid #f44336' : 'none',
+					'& fieldset': {
+						border: 'none',
+					},
 				}}
 				InputProps={{
 					startAdornment: (
@@ -251,34 +245,37 @@ function AutocompleteCustom({ onPlaceSelect }: Props) {
 					classes: {
 						notchedOutline: 'border-none',
 					},
-					disableUnderline: true,
 				}}
 			/>
 			{isDropdownOpen && predictionResults.length > 0 && (
-				<Dropdown className="overflow-x-hidden">
-					<List>
-						{predictionResults.map(
-							({ place_id: placeId, description }) => {
-								return (
-									<ListItemStyled
-										key={placeId}
-										onClick={() =>
-											handleSuggestionClick(placeId)
-										}
-										className="text-xs"
-									>
-										<Typography
-											variant="body2"
-											className="overflow-hidden truncate"
+				<ClickAwayListener onClickAway={handleClickAway}>
+					<Dropdown className="overflow-x-hidden">
+						<List>
+							{predictionResults.map(
+								({ place_id: googlePlaceId, description }) => {
+									return (
+										<ListItemStyled
+											key={googlePlaceId}
+											onClick={() =>
+												handleSuggestionClick(
+													googlePlaceId,
+												)
+											}
+											className="text-xs"
 										>
-											{description}
-										</Typography>
-									</ListItemStyled>
-								);
-							},
-						)}
-					</List>
-				</Dropdown>
+											<Typography
+												variant="body2"
+												className="overflow-hidden truncate"
+											>
+												{description}
+											</Typography>
+										</ListItemStyled>
+									);
+								},
+							)}
+						</List>
+					</Dropdown>
+				</ClickAwayListener>
 			)}
 		</Box>
 	);

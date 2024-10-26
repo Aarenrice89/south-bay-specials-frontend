@@ -1,7 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 
-export default {
-	content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+module.exports = {
+	content: [
+		'./src/**/*.{js,ts,jsx,tsx}',
+		'./src/components/**/*.{js,ts,jsx,tsx}',
+	],
 	theme: {
 		extend: {
 			fontSize: {
@@ -16,6 +19,9 @@ export default {
 				'5xl': '3rem',
 				'6xl': '4rem',
 			},
+			fontFamily: {
+				montserrat: ['Montserrat', 'sans-serif'],
+			},
 		},
 	},
 	screens: {
@@ -25,5 +31,6 @@ export default {
 		xl: '1536px',
 	},
 	plugins: [],
+	// important: '#root',
 	corePlugins: { preflight: false },
 };

@@ -11,6 +11,7 @@ import {
 
 import { Controller, useFormContext } from 'react-hook-form';
 import { flatMap, range } from 'lodash';
+import { type NewSpecial } from 'types';
 
 interface SelectProps {
 	value: string;
@@ -25,24 +26,15 @@ const MenuProps = {
 	},
 };
 
-interface FormValues {
-	name: string;
-	description: string;
-	limitations: string;
-	dayOfWeek: string;
-	startTime: string;
-	endTime: string;
-}
-
 interface TextFormFieldProps {
-	name: keyof FormValues;
+	name: keyof NewSpecial;
 	label: string;
 	requiredField: boolean;
 	componentProps?: object;
 }
 
 interface SelectFormFieldProps {
-	name: keyof FormValues;
+	name: keyof NewSpecial;
 	label: string;
 	requiredField: boolean;
 	dataset: SelectProps[];
@@ -57,13 +49,13 @@ function TextFormField({
 	const {
 		control,
 		formState: { errors },
-	} = useFormContext<FormValues>();
+	} = useFormContext<NewSpecial>();
 
 	return (
 		<Controller
 			name={name}
 			control={control}
-			defaultValue=""
+			defaultValue={null}
 			rules={requiredField ? { required: `${label} is required` } : {}}
 			render={({ field }) => (
 				<FormControl fullWidth>
@@ -72,7 +64,7 @@ function TextFormField({
 						id={name}
 						className="mt-1"
 						onChange={field.onChange}
-						value={field.value}
+						value={field.value || ''}
 						inputRef={field.ref}
 						error={!!errors[name]}
 						autoComplete="off"
@@ -102,20 +94,20 @@ function SelectFormField({
 	const {
 		control,
 		formState: { errors },
-	} = useFormContext<FormValues>();
+	} = useFormContext<NewSpecial>();
 
 	return (
 		<Controller
 			name={name}
 			control={control}
-			defaultValue=""
+			defaultValue={null}
 			rules={requiredField ? { required: `${label} is required` } : {}}
 			render={({ field }) => (
 				<FormControl fullWidth>
 					<FormLabel error={!!errors[name]}>{label}</FormLabel>
 					<Select
 						onChange={field.onChange}
-						value={field.value}
+						value={field.value || ''}
 						inputRef={field.ref}
 						error={!!errors[name]}
 						name={name}
@@ -228,7 +220,5 @@ function SpecialDetailsForm() {
 		</div>
 	);
 }
-
-// Removed defaultProps as default values are set in the function parameter destructuring
 
 export default SpecialDetailsForm;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Button } from '@mui/material';
@@ -5,15 +6,15 @@ import { Button } from '@mui/material';
 import AddLocationModal from './components/AddSpecialModal/add-special-modal';
 import GlobalWrapper from './components/global-wrapper';
 import './assets/styles/index.css';
-import QueryClientProvider from './providers/QueryClientProviders';
+import './assets/styles/output.css';
+import QueryClientProvider from './providers/query-client-provider';
+import NewLocationProvider from './stores/new-location-context';
+import ExistingLocationGoogleMap from './components/GoogleMap/viewer-map';
 
 function App() {
 	const [open, setOpen] = useState<boolean>(false);
 
-	// const { data: testData, status } = useQuery({
-	// 	queryKey: ['ping'],
-	// 	queryFn: () => getTest().then(({ data }) => data),
-	// });
+	// TODO: move the newlocationprovider inside the addlocationmodal
 
 	return (
 		<div className="flex h-screen flex-col">
@@ -25,7 +26,10 @@ function App() {
 				>
 					Test me out
 				</Button>
-				<AddLocationModal open={open} setOpen={setOpen} />
+				<NewLocationProvider>
+					<AddLocationModal open={open} setOpen={setOpen} />
+				</NewLocationProvider>
+				<ExistingLocationGoogleMap />
 			</div>
 		</div>
 	);
