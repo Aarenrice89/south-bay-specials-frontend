@@ -16,15 +16,12 @@ import useNewLocationContext from 'src/hooks/use-new-location-context';
 import CustomMapControl from './map-control';
 import MapHandler from './map-handler';
 
-function GoogleMap() {
+function NewLocationGoogleMap() {
 	const { selectedPlace } = useNewLocationContext();
 	const [markerRef, marker] = useAdvancedMarkerRef();
 
 	return (
-		<APIProvider
-			apiKey={import.meta.env.REACT_APP_MAPS_API_KEY}
-			onLoad={() => console.log('Maps API has loaded.')}
-		>
+		<APIProvider apiKey={import.meta.env.REACT_APP_MAPS_API_KEY}>
 			<div className="flex-grow rounded-l-md overflow-hidden">
 				<Map
 					mapId={import.meta.env.REACT_APP_MAPS_ID_KEY}
@@ -51,7 +48,7 @@ function GoogleMap() {
 							</AdvancedMarker>
 							<InfoWindow
 								anchor={marker}
-								maxWidth={220}
+								maxWidth={240}
 								headerDisabled
 							>
 								<Grid
@@ -63,24 +60,21 @@ function GoogleMap() {
 										<h4 className="text-sm font-bold m-0">
 											{selectedPlace.name}
 										</h4>
-
-										<Grid item xs={12}>
-											<p className="text-xs font-normal m-0 pt-2">
-												{
-													selectedPlace.formatted_address
-												}
-											</p>
-										</Grid>
-										<Grid item xs={12}>
-											<a
-												href={selectedPlace.url}
-												target="_blank"
-												rel="noopener noreferrer"
-												className="text-blue-500 text-xs hover:underline"
-											>
-												View on Google Maps
-											</a>
-										</Grid>
+									</Grid>
+									<Grid item xs={12}>
+										<p className="text-xs font-normal m-0 pt-2">
+											{selectedPlace.formatted_address}
+										</p>
+									</Grid>
+									<Grid item xs={12}>
+										<a
+											href={selectedPlace.url}
+											target="_blank"
+											rel="noopener noreferrer"
+											className="text-blue-500 text-xs hover:underline"
+										>
+											View on Google Maps
+										</a>
 									</Grid>
 								</Grid>
 							</InfoWindow>
@@ -96,4 +90,4 @@ function GoogleMap() {
 	);
 }
 
-export default GoogleMap;
+export default NewLocationGoogleMap;

@@ -1,215 +1,189 @@
-// /* eslint-disable react/jsx-curly-brace-presence */
-// /* eslint-disable no-console */
-// import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 
-// import {
-// 	APIProvider,
-// 	Map,
-// 	ControlPosition,
-// 	type AdvancedMarkerAnchorPoint,
-// 	Pin,
-// 	InfoWindow,
-// } from '@vis.gl/react-google-maps';
+import {
+	APIProvider,
+	Map,
+	AdvancedMarkerAnchorPoint,
+	Pin,
+	InfoWindow,
+} from '@vis.gl/react-google-maps';
+import { Grid, IconButton } from '@mui/material';
+import ClearIcon from '@mui/icons-material/Clear';
+import { getLocations } from 'src/services/api/methods';
+import { type FormattedLocation, type LocationsQueryParams } from 'types';
+import AdvancedMarkerWithRef from './advanced-marker-with-ref';
 
-// // import { type Poi } from 'types';
-// import { Grid, IconButton } from '@mui/material';
-// import ClearIcon from '@mui/icons-material/Clear';
-// import AdvancedMarkerWithRef from './advanced-marker-with-ref';
-// import CustomMapControl from './map-control';
-// import MapHandler from './map-handler';
+export type AnchorPointName = keyof typeof AdvancedMarkerAnchorPoint;
 
-// export type AnchorPointName = keyof typeof AdvancedMarkerAnchorPoint;
+function ExistingLocationGoogleMap() {
+	const [markers, setMarkers] = useState<FormattedLocation[]>([]);
 
-// interface GoogleMapProps {
-// 	onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void;
-// 	selectedPlace: google.maps.places.PlaceResult | null;
-// }
+	const [hoverId, setHoverId] = useState<string | null>(null);
+	const [selectedId, setSelectedId] = useState<string | null>(null);
+	const [selectedPlace, setSelectedPlace] =
+		useState<FormattedLocation | null>(null);
 
-// type MarkerData = {
-// 	id: string;
-// 	position: google.maps.LatLngLiteral;
-// 	title: string;
-// };
+	const [selectedMarker, setSelectedMarker] =
+		useState<google.maps.marker.AdvancedMarkerElement | null>(null);
+	const [infoWindowShown, setInfoWindowShown] = useState(false);
 
-// const sampleData: MarkerData[] = [
-// 	{
-// 		id: '1',
-// 		position: { lat: 33.860664, lng: -118.4009608 },
-// 		title: 'title-1',
-// 	},
-// 	{
-// 		id: '2',
-// 		position: { lat: 33.860664, lng: -118.38 },
-// 		title: 'title-2',
-// 	},
-// 	{
-// 		id: '3',
-// 		position: { lat: 33.860664, lng: -118.36 },
-// 		title: 'title-3',
-// 	},
-// 	{
-// 		id: '4',
-// 		position: { lat: 33.860664, lng: -118.34 },
-// 		title: 'title-4',
-// 	},
-// ] as const;
+	const onMouseEnter = useCallback((id: string | null) => setHoverId(id), []);
+	const onMouseLeave = useCallback(() => setHoverId(null), []);
+	const onMarkerClick = useCallback(
+		(
+			place: FormattedLocation,
+			marker?: google.maps.marker.AdvancedMarkerElement,
+		) => {
+			setSelectedId(place.googlePlaceId);
 
-// function GoogleMap({ onPlaceSelect, selectedPlace }: GoogleMapProps) {
-// 	const handlePlaceSelect = (
-// 		place: google.maps.places.PlaceResult | null,
-// 	) => {
-// 		onPlaceSelect(place);
-// 	};
+			if (marker) {
+				setSelectedMarker(marker);
+				setSelectedPlace(place);
+			}
 
-// 	const [markers] = useState(sampleData);
+			if (place.googlePlaceId !== selectedId) {
+				setInfoWindowShown(true);
+			} else {
+				setInfoWindowShown((isShown) => !isShown);
+			}
+		},
+		[selectedId],
+	);
 
-// 	const [hoverId, setHoverId] = useState<string | null>(null);
-// 	const [selectedId, setSelectedId] = useState<string | null>(null);
-// 	const [selectedMarker, setSelectedMarker] =
-// 		useState<google.maps.marker.AdvancedMarkerElement | null>(null);
-// 	const [infoWindowShown, setInfoWindowShown] = useState(false);
+	const onMapClick = useCallback(() => {
+		setSelectedId(null);
+		setSelectedMarker(null);
+		setSelectedPlace(null);
+		setInfoWindowShown(false);
+	}, []);
 
-// 	const onMouseEnter = useCallback((id: string | null) => setHoverId(id), []);
-// 	const onMouseLeave = useCallback(() => setHoverId(null), []);
-// 	const onMarkerClick = useCallback(
-// 		(
-// 			id: string | null,
-// 			marker?: google.maps.marker.AdvancedMarkerElement,
-// 		) => {
-// 			setSelectedId(id);
+	const handleInfowindowCloseClick = useCallback(() => {
+		setInfoWindowShown(false);
+		setSelectedId(null);
+	}, []);
 
-// 			if (marker) {
-// 				setSelectedMarker(marker);
-// 			}
+	const selectedDay = 'Monday';
 
-// 			if (id !== selectedId) {
-// 				setInfoWindowShown(true);
-// 			} else {
-// 				setInfoWindowShown((isShown) => !isShown);
-// 			}
-// 		},
-// 		[selectedId],
-// 	);
+	const fetchLocationsByDay = ({ day }: LocationsQueryParams) => {
+		getLocations({ day }).then((response) => {
+			setMarkers(response.data);
+		});
+		// .catch((error) => {
+		// 	console.log('error', error);
+		// });
+	};
 
-// 	const onMapClick = useCallback(() => {
-// 		setSelectedId(null);
-// 		setSelectedMarker(null);
-// 		setInfoWindowShown(false);
-// 	}, []);
+	useEffect(() => {
+		fetchLocationsByDay({ day: selectedDay });
+	}, [selectedDay]);
 
-// 	const handleInfowindowCloseClick = useCallback(
-// 		() => setInfoWindowShown(false),
-// 		[],
-// 	);
+	return (
+		<APIProvider
+			apiKey={import.meta.env.REACT_APP_MAPS_API_KEY}
+			// onLoad={() => console.log('Maps API has loaded.')}
+		>
+			<div className="flex-grow rounded-l-md overflow-hidden">
+				<Map
+					mapId={import.meta.env.REACT_APP_MAPS_ID_KEY}
+					defaultZoom={13}
+					defaultCenter={{ lat: 33.860664, lng: -118.4009608 }}
+					className="h-[80vh] w-full"
+					disableDefaultUI
+					onClick={onMapClick}
+				/>
+				{markers.map((place) => {
+					return (
+						<AdvancedMarkerWithRef
+							onMarkerClick={(
+								marker: google.maps.marker.AdvancedMarkerElement,
+							) => onMarkerClick(place, marker)}
+							onMouseEnter={() =>
+								onMouseEnter(place.googlePlaceId)
+							}
+							onMouseLeave={onMouseLeave}
+							key={place.googlePlaceId}
+							className="custom-marker"
+							style={{
+								transform: `scale(${[hoverId, selectedId].includes(place.googlePlaceId) ? 1.3 : 1})`,
+								transformOrigin:
+									AdvancedMarkerAnchorPoint.BOTTOM.join(' '),
+							}}
+							position={{
+								lat: place.latitude,
+								lng: place.longitude,
+							}}
+						>
+							<Pin
+								background={
+									selectedId === place.googlePlaceId
+										? '#22ccff'
+										: null
+								}
+								borderColor={
+									selectedId === place.googlePlaceId
+										? '#1e89a1'
+										: null
+								}
+								glyphColor={
+									selectedId === place.googlePlaceId
+										? '#0f677a'
+										: null
+								}
+							/>
+						</AdvancedMarkerWithRef>
+					);
+				})}
+				{infoWindowShown && selectedMarker && selectedPlace && (
+					<InfoWindow
+						anchor={selectedMarker}
+						pixelOffset={[0, -2]}
+						onCloseClick={handleInfowindowCloseClick}
+						maxWidth={240}
+						headerDisabled
+					>
+						<Grid
+							container
+							spacing={0}
+							className="m-0 pl-2 overflow-hidden"
+						>
+							<Grid item xs={10} className="pt-2">
+								<Grid item xs={12}>
+									<h4 className="text-sm font-bold m-0">
+										{selectedPlace.name}
+									</h4>
+								</Grid>
+								<Grid item xs={12}>
+									<p className="text-xs font-normal m-0 pt-2">
+										{selectedPlace.address}
+									</p>
+								</Grid>
+								<Grid item xs={12}>
+									<a
+										href={selectedPlace.googleUrl}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="text-blue-500 text-xs hover:underline"
+									>
+										View on Google Maps
+									</a>
+								</Grid>
+							</Grid>
+							<Grid item xs={2} className="pt-1">
+								<IconButton
+									size="small"
+									edge="end"
+									onClick={handleInfowindowCloseClick}
+									className="CustomClearButton hover:text-blue-400"
+								>
+									<ClearIcon />
+								</IconButton>
+							</Grid>
+						</Grid>
+					</InfoWindow>
+				)}
+			</div>
+		</APIProvider>
+	);
+}
 
-// 	return (
-// 		<APIProvider
-// 			apiKey={import.meta.env.REACT_APP_MAPS_API_KEY}
-// 			onLoad={() => console.log('Maps API has loaded.')}
-// 		>
-// 			<div className="flex-grow rounded-l-md overflow-hidden">
-// 				<Map
-// 					mapId={import.meta.env.REACT_APP_MAPS_ID_KEY}
-// 					defaultZoom={13}
-// 					defaultCenter={{ lat: 33.860664, lng: -118.4009608 }}
-// 					className="h-[80vh] w-full"
-// 					disableDefaultUI
-// 					onClick={onMapClick}
-// 					// clickableIcons={false}
-// 					// gestureHandling={'greedy'}
-// 				>
-// 					{markers.map(({ id, position }: MarkerData) => {
-// 						return (
-// 							<AdvancedMarkerWithRef
-// 								onMarkerClick={(
-// 									marker: google.maps.marker.AdvancedMarkerElement,
-// 								) => onMarkerClick(id, marker)}
-// 								onMouseEnter={() => onMouseEnter(id)}
-// 								onMouseLeave={onMouseLeave}
-// 								key={id}
-// 								className="custom-marker"
-// 								style={{
-// 									transform: `scale(${[hoverId, selectedId].includes(id) ? 1.4 : 1})`,
-// 								}}
-// 								position={position}
-// 							>
-// 								<Pin
-// 									background={
-// 										selectedId === id ? '#22ccff' : null
-// 									}
-// 									borderColor={
-// 										selectedId === id ? '#1e89a1' : null
-// 									}
-// 									glyphColor={
-// 										selectedId === id ? '#0f677a' : null
-// 									}
-// 								/>
-// 							</AdvancedMarkerWithRef>
-// 						);
-// 					})}
-// 					{infoWindowShown && selectedMarker && (
-// 						<InfoWindow
-// 							anchor={selectedMarker}
-// 							onCloseClick={handleInfowindowCloseClick}
-// 							maxWidth={220}
-// 							headerDisabled
-// 						>
-// 							<Grid
-// 								container
-// 								spacing={0}
-// 								className="m-0 px-2 pt-2"
-// 							>
-// 								<Grid item xs={11}>
-// 									<h4 className="text-sm font-bold m-0">
-// 										location name
-// 									</h4>
-// 									<Grid container spacing={0}>
-// 										<Grid item xs={12}>
-// 											<p className="text-xs font-normal m-0 pt-2">
-// 												2160 E El Segundo Blvd El
-// 												Segundo, CA, 90245
-// 											</p>
-// 										</Grid>
-// 										<Grid item xs={12}>
-// 											<a
-// 												href="https://www.google.com"
-// 												target="_blank"
-// 												rel="noopener noreferrer"
-// 												className="text-blue-500 text-xs hover:underline"
-// 											>
-// 												View on Google Maps
-// 											</a>
-// 										</Grid>
-// 									</Grid>
-// 								</Grid>
-// 								<Grid
-// 									item
-// 									xs={1}
-// 									className="flex justify-end items-start"
-// 								>
-// 									<IconButton
-// 										size="small"
-// 										edge="end"
-// 										onClick={() =>
-// 											setInfoWindowShown(false)
-// 										}
-// 										className="CustomClearButton hover:text-blue-400"
-// 									>
-// 										<ClearIcon />
-// 									</IconButton>
-// 								</Grid>
-// 							</Grid>
-// 						</InfoWindow>
-// 					)}
-// 				</Map>
-// 				<CustomMapControl
-// 					controlPosition={ControlPosition.TOP_CENTER}
-// 					// onPlaceSelect={handlePlaceSelect}
-// 				/>
-// 				<MapHandler place={selectedPlace} />
-// 			</div>
-// 		</APIProvider>
-// 	);
-// }
-
-// export default GoogleMap;
+export default ExistingLocationGoogleMap;

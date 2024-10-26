@@ -5,7 +5,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { postNewSpecial } from 'src/services/api/methods';
 import { type NewSpecial } from 'types';
 import useNewLocationContext from 'src/hooks/use-new-location-context';
-import GoogleMap from '../GoogleMap/new-location-map';
+import NewLocationGoogleMap from '../GoogleMap/new-location-map';
 import SpecialDetailsForm from '../SpecialDetailsForm/special-details';
 
 interface Props {
@@ -14,11 +14,22 @@ interface Props {
 }
 
 function AddLocationModal({ open, setOpen }: Props) {
-	const { setSelectedPlace } = useNewLocationContext();
+	const { setSelectedPlace, setInputValue } = useNewLocationContext();
 
 	const formMethods = useForm<NewSpecial>({
-		defaultValues: { selectedPlace: null },
+		// defaultValues: { selectedPlace: null },
 	});
+
+	const handleClearForm = () => {
+		formMethods.reset();
+		setSelectedPlace(null);
+		setInputValue('');
+	};
+
+	const handleClose = () => {
+		setOpen(false);
+		handleClearForm();
+	};
 
 	const onSubmit = (data: NewSpecial) => {
 		if (!data.selectedPlace) {
@@ -29,12 +40,7 @@ function AddLocationModal({ open, setOpen }: Props) {
 			return;
 		}
 		postNewSpecial(data);
-	};
-
-	const handleClose = () => {
-		formMethods.reset();
-		setOpen(false);
-		setSelectedPlace(null);
+		handleClearForm();
 	};
 
 	return (
@@ -62,7 +68,7 @@ function AddLocationModal({ open, setOpen }: Props) {
 					>
 						<div className="w-full">
 							<div className="grid grid-cols-2 divide-x">
-								<GoogleMap />
+								<NewLocationGoogleMap />
 								<SpecialDetailsForm />
 							</div>
 						</div>

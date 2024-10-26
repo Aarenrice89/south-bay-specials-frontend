@@ -6,12 +6,16 @@ interface INewLocationContext {
 		React.SetStateAction<google.maps.places.PlaceResult | null>
 	>;
 	onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void;
+	inputValue: string;
+	setInputValue: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const initialContext: INewLocationContext = {
 	selectedPlace: null,
 	setSelectedPlace: () => undefined,
 	onPlaceSelect: () => undefined,
+	inputValue: '',
+	setInputValue: () => undefined,
 };
 
 export const NewLocationContext =
@@ -24,6 +28,7 @@ export default function NewLocationProvider({
 }) {
 	const [selectedPlace, setSelectedPlace] =
 		useState<google.maps.places.PlaceResult | null>(null);
+	const [inputValue, setInputValue] = useState<string>('');
 
 	const newLocationContext: INewLocationContext = useMemo(() => {
 		const onPlaceSelect = (
@@ -36,8 +41,10 @@ export default function NewLocationProvider({
 			selectedPlace,
 			setSelectedPlace,
 			onPlaceSelect,
+			inputValue,
+			setInputValue,
 		};
-	}, [selectedPlace, setSelectedPlace]);
+	}, [selectedPlace, setSelectedPlace, inputValue, setInputValue]);
 
 	return (
 		<NewLocationContext.Provider value={newLocationContext}>

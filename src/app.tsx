@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Button } from '@mui/material';
@@ -8,6 +9,7 @@ import './assets/styles/index.css';
 import './assets/styles/output.css';
 import QueryClientProvider from './providers/query-client-provider';
 import NewLocationProvider from './stores/new-location-context';
+import ExistingLocationGoogleMap from './components/GoogleMap/viewer-map';
 
 function App() {
 	const [open, setOpen] = useState<boolean>(false);
@@ -27,6 +29,7 @@ function App() {
 				<NewLocationProvider>
 					<AddLocationModal open={open} setOpen={setOpen} />
 				</NewLocationProvider>
+				<ExistingLocationGoogleMap />
 			</div>
 		</div>
 	);

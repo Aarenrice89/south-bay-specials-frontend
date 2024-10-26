@@ -21,7 +21,8 @@
 			"types": ["src/types"],
 			"types/*": ["src/types/*"],
 			"utils/*": ["src/utils/*"],
-			"stores/*": ["src/stores/*"]
+			"stores/*": ["src/stores/*"],
+			"hooks/*": ["src/hooks/*"]
 		},
 		"types": [
 			"vite/client",

@@ -6,7 +6,9 @@ const Endpoints = {
 	test: '/api/v1/ping/',
 
 	// location
-	locations: '/api/v1/locations/',
+	locations: (searchParams: string): ApiUrl => {
+		return `/api/v1/locations/?${searchParams}`;
+	},
 	location: (id: string) => `/api/v1/locations/${id}/`,
 
 	// specials

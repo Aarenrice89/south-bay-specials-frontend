@@ -45,9 +45,10 @@ const transformPlaceKeys = (
 	address: place.formatted_address || null,
 	phoneNumber: place.formatted_phone_number || null,
 	website: place.website || null,
-	googlePlaceId: place.place_id || null,
-	latitude: place.geometry?.location?.lat() || null,
-	longitude: place.geometry?.location?.lng() || null,
+	googlePlaceId: place.place_id || '',
+	googleUrl: place.url || '',
+	latitude: place.geometry?.location?.lat() || 0,
+	longitude: place.geometry?.location?.lng() || 0,
 });
 
 const ListItemStyled = styled(ListItem)({
@@ -61,7 +62,8 @@ function AutocompleteCustom() {
 	const map = useMap();
 	const places = useMapsLibrary('places');
 	const containerRef = useRef<HTMLDivElement>(null);
-	const { setSelectedPlace, onPlaceSelect } = useNewLocationContext();
+	const { setSelectedPlace, onPlaceSelect, inputValue, setInputValue } =
+		useNewLocationContext();
 	const {
 		formState: { errors },
 		clearErrors,
@@ -84,7 +86,6 @@ function AutocompleteCustom() {
 		Array<google.maps.places.AutocompletePrediction>
 	>([]);
 
-	const [inputValue, setInputValue] = useState<string>('');
 	const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(true);
 
 	useEffect(() => {
@@ -126,7 +127,7 @@ function AutocompleteCustom() {
 			fetchPredictions(value);
 			setIsDropdownOpen(true);
 		},
-		[fetchPredictions],
+		[fetchPredictions, setInputValue],
 	);
 
 	const handleSuggestionClick = useCallback(
@@ -152,7 +153,6 @@ function AutocompleteCustom() {
 				(placeDetails: google.maps.places.PlaceResult | null) => {
 					if (placeDetails) {
 						onPlaceSelect(placeDetails);
-
 						setValue(
 							'selectedPlace',
 							transformPlaceKeys(placeDetails),
@@ -189,6 +189,7 @@ function AutocompleteCustom() {
 			places,
 			clearErrors,
 			setValue,
+			setInputValue,
 		],
 	);
 
