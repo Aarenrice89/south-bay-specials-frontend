@@ -20,6 +20,8 @@
 			"components/*": ["src/components/*"],
 			"types": ["src/types"],
 			"types/*": ["src/types/*"],
+			"schemas": ["src/schemas"],
+			"schemas/*": ["src/schemas/*"],
 			"utils/*": ["src/utils/*"],
 			"stores/*": ["src/stores/*"],
 			"hooks/*": ["src/hooks/*"]
