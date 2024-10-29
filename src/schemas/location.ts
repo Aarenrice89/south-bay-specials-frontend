@@ -11,12 +11,8 @@ export const locationSchema = z.object({
 	googleUrl: z.string(),
 });
 
+export const locationListSchema = z.array(locationSchema);
+
 export const locationQueryParamsSchema = z.object({
 	day: z.string().optional(),
 });
-
-export const locationListSchema = z.array(locationSchema);
-
-export interface FormattedLocation extends z.infer<typeof locationSchema> {}
-export interface LocationListResponse
-	extends z.infer<typeof locationListSchema> {}

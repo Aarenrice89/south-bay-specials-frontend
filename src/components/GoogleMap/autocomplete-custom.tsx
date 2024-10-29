@@ -21,8 +21,8 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useFormContext } from 'react-hook-form';
-import { type NewSpecial, type FormattedLocation } from 'types';
-import useNewLocationContext from 'src/hooks/use-new-location-context';
+import { type newSpecialRequest, type FormattedLocation } from 'types';
+import useNewLocationContext from 'hooks/use-new-location';
 
 const Dropdown = styled(Paper)({
 	position: 'absolute',
@@ -38,6 +38,13 @@ const Dropdown = styled(Paper)({
 	overflowY: 'auto',
 });
 
+const ListItemStyled = styled(ListItem)({
+	cursor: 'pointer',
+	'&:hover': {
+		backgroundColor: '#f0f0f0',
+	},
+});
+
 const transformPlaceKeys = (
 	place: google.maps.places.PlaceResult,
 ): FormattedLocation => ({
@@ -51,13 +58,6 @@ const transformPlaceKeys = (
 	longitude: place.geometry?.location?.lng() || 0,
 });
 
-const ListItemStyled = styled(ListItem)({
-	cursor: 'pointer',
-	'&:hover': {
-		backgroundColor: '#f0f0f0',
-	},
-});
-
 function AutocompleteCustom() {
 	const map = useMap();
 	const places = useMapsLibrary('places');
@@ -68,7 +68,7 @@ function AutocompleteCustom() {
 		formState: { errors },
 		clearErrors,
 		setValue,
-	} = useFormContext<NewSpecial>();
+	} = useFormContext<newSpecialRequest>();
 
 	// https://developers.google.com/maps/documentation/javascript/reference/places-autocomplete-service#AutocompleteSessionToken
 	const [sessionToken, setSessionToken] =

@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 
-import { NewLocationContext } from 'stores/new-location-context';
+import { NewLocationContext } from 'src/providers/new-location-provider';
 
 export default function useNewLocationContext() {
 	return useContext(NewLocationContext);

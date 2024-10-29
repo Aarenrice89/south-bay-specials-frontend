@@ -8,7 +8,7 @@ import GlobalWrapper from './components/global-wrapper';
 import './assets/styles/index.css';
 import './assets/styles/output.css';
 import QueryClientProvider from './providers/query-client-provider';
-import NewLocationProvider from './stores/new-location-context';
+import NewLocationProvider from './providers/new-location-provider';
 import ExistingLocationGoogleMap from './components/GoogleMap/viewer-map';
 
 function App() {

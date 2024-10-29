@@ -12,7 +12,7 @@ import {
 } from '@vis.gl/react-google-maps';
 
 import { Grid } from '@mui/material';
-import useNewLocationContext from 'src/hooks/use-new-location-context';
+import useNewLocationContext from 'hooks/use-new-location';
 import CustomMapControl from './map-control';
 import MapHandler from './map-handler';
 
