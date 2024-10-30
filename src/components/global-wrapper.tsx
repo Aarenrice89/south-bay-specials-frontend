@@ -8,8 +8,9 @@ function GlobalWrapper({ children }: { children: ReactNode }) {
 			<HeaderBar />
 			<Container
 				maxWidth={false}
-				className="px-0 grow flex flex-col"
+				className="p-0 grow flex flex-col"
 				role="main"
+				disableGutters
 			>
 				{children}
 			</Container>
