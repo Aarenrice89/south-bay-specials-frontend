@@ -62,7 +62,7 @@ function ExistingLocationGoogleMap() {
 		setSelectedId(null);
 	}, []);
 
-	const selectedDay = 'Monday';
+	const selectedDay = '';
 
 	const fetchLocationsByDay = ({ day }: LocationsQueryParams) => {
 		getLocations({ day }).then((response) => {
@@ -78,16 +78,16 @@ function ExistingLocationGoogleMap() {
 	}, [selectedDay]);
 
 	return (
-		<APIProvider
-			apiKey={import.meta.env.REACT_APP_MAPS_API_KEY}
-			// onLoad={() => console.log('Maps API has loaded.')}
-		>
-			<div className="flex-grow rounded-l-md overflow-hidden">
+		<div className="flex-grow rounded-l-md overflow-hidden">
+			<APIProvider
+				apiKey={import.meta.env.REACT_APP_MAPS_API_KEY}
+				// onLoad={() => console.log('Maps API has loaded.')}
+			>
 				<Map
 					mapId={import.meta.env.REACT_APP_MAPS_ID_KEY}
 					defaultZoom={13}
 					defaultCenter={{ lat: 33.860664, lng: -118.4009608 }}
-					className="h-[80vh] w-full"
+					className="h-[calc(100vh-64px)] w-full"
 					disableDefaultUI
 					onClick={onMapClick}
 				/>
@@ -181,8 +181,8 @@ function ExistingLocationGoogleMap() {
 						</Grid>
 					</InfoWindow>
 				)}
-			</div>
-		</APIProvider>
+			</APIProvider>
+		</div>
 	);
 }
 

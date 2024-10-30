@@ -41,6 +41,17 @@ html {
 	height: 100%;
 }
 
+header {
+	height: 64px;
+	padding: 0px;
+	margin: 0px;
+}
+
+#body,
+.fullscreen {
+	min-height: calc(100vh - 64px);
+}
+
 /* Custom styles for MUI TextField */
 .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input {
 	padding: 10px 14px;
