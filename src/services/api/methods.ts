@@ -1,9 +1,11 @@
+import { z } from 'zod';
 import { isNil, snakeCase } from 'lodash';
 import {
 	pingSchema,
 	locationListSchema,
 	locationQueryParamsSchema,
 	newSpecialResponseSchema,
+	groupedSpecialResponseSchema,
 } from 'schemas';
 import Endpoints from './endpoints';
 import { zodGet, zodPost } from './zod-methods';
@@ -13,6 +15,7 @@ import type {
 	FormattedLocation,
 	newSpecialRequest,
 	LocationsQueryParams,
+	groupedSpecialResponse,
 } from 'types';
 
 export const getTest = () => {
@@ -30,6 +33,21 @@ export const getLocations = (params: LocationsQueryParams) => {
 		zodGet<FormattedLocation[]>(
 			Endpoints.locations(searchParams.toString()),
 			locationListSchema,
+		),
+	);
+};
+
+export const getGroupedSpecials = (params: LocationsQueryParams) => {
+	const searchParams = new URLSearchParams();
+	Object.entries(params).forEach(([key, value]) => {
+		if (!isNil(value) && value !== '') {
+			searchParams.append(snakeCase(key), value as string);
+		}
+	});
+	return validateAsync(locationQueryParamsSchema, params).then(() =>
+		zodGet<groupedSpecialResponse[]>(
+			Endpoints.groupedSpecial(searchParams.toString()),
+			z.array(groupedSpecialResponseSchema),
 		),
 	);
 };

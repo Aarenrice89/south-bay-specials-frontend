@@ -37,7 +37,7 @@ function NewLocationGoogleMap() {
 								key={selectedPlace.place_id}
 								position={selectedPlace.geometry?.location}
 								anchorPoint={
-									AdvancedMarkerAnchorPoint.TOP_CENTER
+									AdvancedMarkerAnchorPoint.BOTTOM_CENTER
 								}
 							>
 								<Pin

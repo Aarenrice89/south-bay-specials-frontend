@@ -18,13 +18,15 @@
 		"baseUrl": ".",
 		"paths": {
 			"components/*": ["src/components/*"],
-			"types": ["src/types"],
-			"types/*": ["src/types/*"],
+			"hooks/*": ["src/hooks/*"],
+			"providers": ["src/providers"],
+			"providers/*": ["src/providers/*"],
 			"schemas": ["src/schemas"],
 			"schemas/*": ["src/schemas/*"],
-			"utils/*": ["src/utils/*"],
 			"stores/*": ["src/stores/*"],
-			"hooks/*": ["src/hooks/*"]
+			"types": ["src/types"],
+			"types/*": ["src/types/*"],
+			"utils/*": ["src/utils/*"]
 		},
 		"types": [
 			"vite/client",
