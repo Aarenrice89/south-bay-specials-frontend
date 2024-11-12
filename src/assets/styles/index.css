@@ -38,7 +38,7 @@ html {
 	/* box-sizing: border-box; */
 	margin: 0;
 	padding: 0;
-	height: 100%;
+	height: calc(100vh - 64px);
 }
 
 header {
@@ -47,9 +47,9 @@ header {
 	margin: 0px;
 }
 
-#body,
-.fullscreen {
+#body {
 	min-height: calc(100vh - 64px);
+	max-height: calc(100vh - 64px);
 }
 
 /* Custom styles for MUI TextField */
@@ -80,4 +80,26 @@ header {
 
 .gm-style-iw-d {
 	overflow-y: hidden !important;
+}
+
+@layer utilities {
+	.scrollbar::-webkit-scrollbar {
+		width: 15px;
+		height: 15px;
+	}
+
+	.scrollbar::-webkit-scrollbar-track {
+		border-radius: 100vh;
+		background: #f7f4ed;
+	}
+
+	.scrollbar::-webkit-scrollbar-thumb {
+		background: #e0cbcb;
+		border-radius: 100vh;
+		border: 3px solid #f6f7ed;
+	}
+
+	.scrollbar::-webkit-scrollbar-thumb:hover {
+		background: #c0a0b9;
+	}
 }

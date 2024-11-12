@@ -1,14 +1,17 @@
 import { z } from 'zod';
 
-export const locationSchema = z.object({
+export const locationBaseSchema = z.object({
 	name: z.string().nullable(),
 	address: z.string().nullable(),
-	latitude: z.number(),
-	longitude: z.number(),
 	phoneNumber: z.string().nullable(),
 	website: z.string().nullable(),
 	googlePlaceId: z.string(),
 	googleUrl: z.string(),
+});
+
+export const locationSchema = locationBaseSchema.extend({
+	latitude: z.number(),
+	longitude: z.number(),
 });
 
 export const locationListSchema = z.array(locationSchema);

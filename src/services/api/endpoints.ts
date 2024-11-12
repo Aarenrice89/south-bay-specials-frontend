@@ -14,6 +14,9 @@ const Endpoints = {
 	// specials
 	specials: '/api/v1/specials/',
 	special: (id: string) => `/api/v1/specials/${id}/`,
+	groupedSpecial: (searchParams: string): ApiUrl => {
+		return `/api/v1/specials/grouped/?${searchParams}`;
+	},
 } satisfies ApiUrls;
 
 export { type ApiUrl };

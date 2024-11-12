@@ -6,7 +6,11 @@ export type {
 	LocationListResponse,
 	LocationsQueryParams,
 } from 'types/location';
-export type { newSpecialRequest, newSpecialResponse } from 'types/special';
+export type {
+	newSpecialRequest,
+	newSpecialResponse,
+	groupedSpecialResponse,
+} from 'types/special';
 
 export interface NewSpecialSelectProps {
 	value: string;

@@ -2,6 +2,7 @@
 import React, { createRef, useState, useEffect } from 'react';
 import { Box, Divider } from '@mui/material';
 import { DragHandle } from '@mui/icons-material';
+import useSplitPanelContext from 'hooks/use-split-panel';
 import LeftPanel from './split-view-left-panel';
 
 interface SplitViewProps {
@@ -10,14 +11,15 @@ interface SplitViewProps {
 	className?: string;
 }
 
-const MIN_WIDTH = 200;
+const MIN_WIDTH = 500;
 
 export default function SplitView({
 	left,
 	right,
 	className = '',
 }: SplitViewProps) {
-	const [leftWidth, setLeftWidth] = useState<undefined | number>(undefined);
+	const { leftWidth, setLeftWidth } = useSplitPanelContext();
+
 	const [separatorXPosition, setSeparatorXPosition] = useState<
 		undefined | number
 	>(undefined);
