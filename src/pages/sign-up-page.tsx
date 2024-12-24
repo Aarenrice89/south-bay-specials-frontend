@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React from 'react';
 import {
 	Box,
@@ -59,7 +58,6 @@ export default function SignUpPage() {
 	const onSubmit = (data: RegisterNewUser) => {
 		postRegisterNewUser(data)
 			.then(() => {
-				console.log('User registered successfully');
 				navigate(paths.login);
 			})
 			.catch((error) => console.error('User registration failed', error));

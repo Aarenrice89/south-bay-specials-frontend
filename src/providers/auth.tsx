@@ -44,7 +44,6 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 	const [loading, setLoading] = useState<boolean>(true);
 
 	const updateToken = useCallback(() => {
-		console.log('working');
 		if (authTokens && authTokens.refresh) {
 			postRefreshToken(authTokens.refresh).then((response) => {
 				const responseData = response.data;

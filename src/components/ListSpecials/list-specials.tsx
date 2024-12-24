@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { useEffect, useState } from 'react';
 import { Box, Divider, Grid, Typography } from '@mui/material';
 import { Place, Language, PhoneIphone } from '@mui/icons-material';
