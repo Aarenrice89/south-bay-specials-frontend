@@ -105,6 +105,8 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 	}, [authTokens, loading, updateToken]);
 
 	return (
-		<AuthContext.Provider value={authData}>{children}</AuthContext.Provider>
+		<AuthContext.Provider value={authData}>
+			{loading ? null : children}
+		</AuthContext.Provider>
 	);
 }
