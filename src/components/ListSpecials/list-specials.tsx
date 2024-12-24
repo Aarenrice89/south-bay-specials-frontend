@@ -4,7 +4,7 @@ import { Box, Divider, Grid, Typography } from '@mui/material';
 import { Place, Language, PhoneIphone } from '@mui/icons-material';
 import useSplitPanelContext from 'hooks/use-split-panel';
 import { getGroupedSpecials } from 'src/services/api/methods';
-import { type LocationsQueryParams, type groupedSpecialResponse } from 'types';
+import { type LocationsQueryParams, type GroupedSpecialResponse } from 'types';
 import ListLocationDetail from './list-special-location-detail';
 import ListSpecialDetail from './list-special-special-details';
 
@@ -12,7 +12,7 @@ const SPECIAL_MIN_W = 500;
 const SPECIAL_MAX_W = 600;
 
 export default function ListSpecials() {
-	const [data, setData] = useState<groupedSpecialResponse[]>([]);
+	const [data, setData] = useState<GroupedSpecialResponse[]>([]);
 	const { onMouseEnter, onMouseLeave, isMultiColumn } =
 		useSplitPanelContext();
 

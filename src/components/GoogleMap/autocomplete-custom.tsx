@@ -21,7 +21,7 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useFormContext } from 'react-hook-form';
-import { type newSpecialRequest, type FormattedLocation } from 'types';
+import { type NewSpecialRequest, type FormattedLocation } from 'types';
 import useNewLocationContext from 'hooks/use-new-location';
 
 const Dropdown = styled(Paper)({
@@ -68,7 +68,7 @@ function AutocompleteCustom() {
 		formState: { errors },
 		clearErrors,
 		setValue,
-	} = useFormContext<newSpecialRequest>();
+	} = useFormContext<NewSpecialRequest>();
 
 	// https://developers.google.com/maps/documentation/javascript/reference/places-autocomplete-service#AutocompleteSessionToken
 	const [sessionToken, setSessionToken] =

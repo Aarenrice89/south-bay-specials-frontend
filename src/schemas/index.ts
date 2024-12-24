@@ -10,3 +10,10 @@ export {
 	newSpecialResponseSchema,
 	groupedSpecialResponseSchema,
 } from './special';
+export {
+	registerNewUser,
+	loginUser,
+	registerNewUserResponse,
+	loginUserResponse,
+} from './auth';
+export { userSchema } from './user';

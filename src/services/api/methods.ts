@@ -10,12 +10,17 @@ import {
 import Endpoints from './endpoints';
 import { zodGet, zodPost } from './zod-methods';
 import { validateAsync } from './validate';
+import { auxilaryClient, client } from './clients';
 import type {
 	PingResponse,
 	FormattedLocation,
-	newSpecialRequest,
+	NewSpecialRequest,
 	LocationsQueryParams,
-	groupedSpecialResponse,
+	GroupedSpecialResponse,
+	RegisterNewUser,
+	LoginUser,
+	LoginUserResponse,
+	RegisterNewUserResponse,
 } from 'types';
 
 export const getTest = () => {
@@ -45,15 +50,28 @@ export const getGroupedSpecials = (params: LocationsQueryParams) => {
 		}
 	});
 	return validateAsync(locationQueryParamsSchema, params).then(() =>
-		zodGet<groupedSpecialResponse[]>(
+		zodGet<GroupedSpecialResponse[]>(
 			Endpoints.groupedSpecial(searchParams.toString()),
 			z.array(groupedSpecialResponseSchema),
 		),
 	);
 };
 
-export const postNewSpecial = (data: newSpecialRequest) => {
-	// eslint-disable-next-line no-console
-	console.log('new data', data);
+export const postNewSpecial = (data: NewSpecialRequest) => {
 	return zodPost(Endpoints.specials, data, newSpecialResponseSchema);
+};
+
+export const postRegisterNewUser = (data: RegisterNewUser) => {
+	return auxilaryClient.post<RegisterNewUserResponse>(
+		Endpoints.register,
+		data,
+	);
+};
+
+export const postLoginUser = (data: LoginUser) => {
+	return auxilaryClient.post<LoginUserResponse>(Endpoints.login, data);
+};
+
+export const postRefreshToken = (refreshToken: string) => {
+	return client.post<LoginUserResponse>(Endpoints.refresh, refreshToken);
 };

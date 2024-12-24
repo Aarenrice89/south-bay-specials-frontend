@@ -1,89 +1,119 @@
 import React, { useState } from 'react';
 import {
 	AppBar,
-	Avatar,
-	Box,
 	Toolbar,
 	IconButton,
 	Typography,
 	Menu,
 	MenuItem,
-	Tooltip,
+	Button,
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
 
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+import { AccountCircle } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import { paths } from 'enums';
+import useAuthContext from 'hooks/use-auth';
+import NewLocationProvider from 'providers/new-location-provider';
+import AddSpecialModal from '../AddSpecialModal/add-special-modal';
 
 export default function HeaderBar() {
-	const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+	const navigate = useNavigate();
 
-	const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-		setAnchorElUser(event.currentTarget);
+	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+	const [openAddSpecialModal, setOpenAddSpecialModal] =
+		useState<boolean>(false);
+
+	const { isAuthenticated, logout } = useAuthContext();
+
+	const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+		setAnchorEl(event.currentTarget);
 	};
 
-	const handleCloseUserMenu = () => {
-		setAnchorElUser(null);
+	const handleClose = () => {
+		setAnchorEl(null);
+	};
+
+	const handleSignIn = () => {
+		navigate(paths.login);
+	};
+
+	const handleSignOut = () => {
+		logout();
+		handleClose();
+	};
+
+	const handleAddSpecial = () => {
+		setOpenAddSpecialModal(true);
 	};
 
 	return (
-		<AppBar position="static">
-			<Toolbar>
-				<IconButton
-					size="small"
-					edge="start"
-					className="mr-6"
-					color="inherit"
-					aria-label="menu"
-				>
-					<MenuIcon />
-				</IconButton>
-				<Typography
-					variant="h6"
-					component="div"
-					className="flex flex-grow"
-				>
-					South Bay Specials
-				</Typography>
-				<Box className="flex flex-grow-0">
-					<Tooltip title="Open settings">
-						<IconButton
-							onClick={handleOpenUserMenu}
-							className="p-0"
-						>
-							<Avatar className="max-h-8 max-w-8">
-								<Typography variant="body1">AR</Typography>
-							</Avatar>
-						</IconButton>
-					</Tooltip>
-					<Menu
-						className="mt-10 ml-2"
-						id="menu-appbar"
-						anchorEl={anchorElUser}
-						anchorOrigin={{
-							vertical: 'top',
-							horizontal: 'right',
-						}}
-						keepMounted
-						transformOrigin={{
-							vertical: 'top',
-							horizontal: 'right',
-						}}
-						open={Boolean(anchorElUser)}
-						onClose={handleCloseUserMenu}
+		<>
+			<AppBar position="static">
+				<Toolbar>
+					<IconButton
+						edge="start"
+						color="inherit"
+						aria-label="logo"
+						onClick={() => navigate(paths.root)}
 					>
-						{settings.map((setting) => (
-							<MenuItem
-								key={setting}
-								onClick={handleCloseUserMenu}
+						<img
+							src="../../../public/Logo.png"
+							alt="Logo"
+							className="rounded-full"
+							style={{ width: 50, height: 50 }}
+						/>
+					</IconButton>
+					<Typography variant="h6" style={{ flexGrow: 1 }}>
+						South Bay Specials
+					</Typography>
+					{isAuthenticated ? (
+						<>
+							<Button color="inherit" onClick={handleAddSpecial}>
+								Add Special
+							</Button>
+							<IconButton
+								edge="end"
+								aria-label="account of current user"
+								aria-controls="menu-appbar"
+								aria-haspopup="true"
+								onClick={handleMenu}
+								color="inherit"
 							>
-								<Typography textAlign="center">
-									{setting}
-								</Typography>
-							</MenuItem>
-						))}
-					</Menu>
-				</Box>
-			</Toolbar>
-		</AppBar>
+								<AccountCircle />
+							</IconButton>
+							<Menu
+								id="menu-appbar"
+								anchorEl={anchorEl}
+								anchorOrigin={{
+									vertical: 'top',
+									horizontal: 'right',
+								}}
+								keepMounted
+								transformOrigin={{
+									vertical: 'top',
+									horizontal: 'right',
+								}}
+								open={Boolean(anchorEl)}
+								onClose={handleClose}
+							>
+								<MenuItem onClick={handleSignOut}>
+									Sign Out
+								</MenuItem>
+							</Menu>
+						</>
+					) : (
+						<Button color="inherit" onClick={handleSignIn}>
+							Sign In
+						</Button>
+					)}
+				</Toolbar>
+			</AppBar>
+			<NewLocationProvider>
+				<AddSpecialModal
+					open={openAddSpecialModal}
+					setOpen={setOpenAddSpecialModal}
+				/>
+			</NewLocationProvider>
+		</>
 	);
 }

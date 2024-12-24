@@ -1,4 +1,4 @@
-import { type newSpecialRequest } from 'types/special';
+import { type NewSpecialRequest } from 'types/special';
 
 export type { PingResponse } from 'types/ping';
 export type {
@@ -7,10 +7,17 @@ export type {
 	LocationsQueryParams,
 } from 'types/location';
 export type {
-	newSpecialRequest,
-	newSpecialResponse,
-	groupedSpecialResponse,
+	NewSpecialRequest,
+	NewSpecialResponse,
+	GroupedSpecialResponse,
 } from 'types/special';
+export type {
+	RegisterNewUser,
+	LoginUser,
+	RegisterNewUserResponse,
+	LoginUserResponse,
+} from 'types/auth';
+export type { User } from 'types/user';
 
 export interface NewSpecialSelectProps {
 	value: string;
@@ -18,14 +25,14 @@ export interface NewSpecialSelectProps {
 }
 
 export interface NewSpecialTextFormFieldProps {
-	name: keyof newSpecialRequest;
+	name: keyof NewSpecialRequest;
 	label: string;
 	requiredField: boolean;
 	componentProps?: object;
 }
 
 export interface NewSpecialSelectFormFieldProps {
-	name: keyof newSpecialRequest;
+	name: keyof NewSpecialRequest;
 	label: string;
 	requiredField: boolean;
 	dataset: NewSpecialSelectProps[];
