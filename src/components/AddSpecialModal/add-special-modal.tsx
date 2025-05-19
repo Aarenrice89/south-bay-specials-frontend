@@ -3,7 +3,7 @@ import { Button, Dialog, DialogContent, DialogTitle } from '@mui/material';
 import { useForm, FormProvider } from 'react-hook-form';
 
 import { postNewSpecial } from 'src/services/api/methods';
-import { type newSpecialRequest } from 'types';
+import { type NewSpecialRequest } from 'types';
 import useNewLocationContext from 'hooks/use-new-location';
 import NewLocationGoogleMap from '../GoogleMap/new-location-map';
 import SpecialDetailsForm from '../SpecialDetailsForm/special-details';
@@ -17,9 +17,7 @@ function AddLocationModal({
 }) {
 	const { setSelectedPlace, setInputValue } = useNewLocationContext();
 
-	const formMethods = useForm<newSpecialRequest>({
-		// defaultValues: { selectedPlace: null },
-	});
+	const formMethods = useForm<NewSpecialRequest>();
 
 	const handleClearForm = () => {
 		formMethods.reset();
@@ -32,7 +30,7 @@ function AddLocationModal({
 		handleClearForm();
 	};
 
-	const onSubmit = (data: newSpecialRequest) => {
+	const onSubmit = (data: NewSpecialRequest) => {
 		if (!data.selectedPlace) {
 			formMethods.setError('selectedPlace', {
 				type: 'manual',

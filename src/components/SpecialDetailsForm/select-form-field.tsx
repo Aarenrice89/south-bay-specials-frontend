@@ -7,7 +7,7 @@ import {
 	FormHelperText,
 } from '@mui/material';
 
-import type { newSpecialRequest, NewSpecialSelectFormFieldProps } from 'types';
+import type { NewSpecialRequest, NewSpecialSelectFormFieldProps } from 'types';
 
 const MenuProps = {
 	PaperProps: {
@@ -26,7 +26,7 @@ export default function SelectFormField({
 	const {
 		control,
 		formState: { errors },
-	} = useFormContext<newSpecialRequest>();
+	} = useFormContext<NewSpecialRequest>();
 
 	return (
 		<Controller

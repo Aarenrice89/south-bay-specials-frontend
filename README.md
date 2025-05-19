@@ -2,13 +2,13 @@
 
 ## Table of Contents
 
--   [Project Overview](#project-overview)
--   [Prerequisites](#prerequisites)
--   [Installation](#installation)
--   [Running the Project](#running-the-project)
--   [Project Structure](#project-structure)
--   [Available Scripts](#available-scripts)
--   [Dependencies](#dependencies)
+- [Project Overview](#project-overview)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Running the Project](#running-the-project)
+- [Project Structure](#project-structure)
+- [Available Scripts](#available-scripts)
+- [Dependencies](#dependencies)
 
 ## Project Overview
 
@@ -18,8 +18,8 @@ This project is a web application built with React, Vite, and TailwindCSS. It in
 
 Before you begin, ensure you have met the following requirements:
 
--   **Node.js**: You need to have Node.js installed. You can download it from [nodejs.org](https://nodejs.org/).
--   **pnpm**: This project uses pnpm as the package manager. You can install it globally using npm.
+- **Node.js**: You need to have Node.js installed. You can download it from [nodejs.org](https://nodejs.org/).
+- **pnpm**: This project uses pnpm as the package manager. You can install it globally using npm.
 
 ## Installation
 
@@ -79,21 +79,21 @@ Runs ESLint to analyze the code for potential errors and code style issues.
 
 The project uses the following main dependencies:
 
--   React: A JavaScript library for building user interfaces.
--   Vite: A fast build tool for modern web projects.
--   TailwindCSS: A utility-first CSS framework.
--   pnpm: A fast, disk space efficient package manager.
--   @mui/material: Material-UI components for React.
--   @vis.gl/react-google-maps: React bindings for Google Maps.
--   axios: Promise-based HTTP client for the browser and Node.js.
+- React: A JavaScript library for building user interfaces.
+- Vite: A fast build tool for modern web projects.
+- TailwindCSS: A utility-first CSS framework.
+- pnpm: A fast, disk space efficient package manager.
+- @mui/material: Material-UI components for React.
+- @vis.gl/react-google-maps: React bindings for Google Maps.
+- axios: Promise-based HTTP client for the browser and Node.js.
 
 ### Additional Libraries
 
 Other libraries and tools used in this project include:
 
--   ESLint: A tool for identifying and reporting on patterns found in ECMAScript/JavaScript code.
--   TypeScript: A typed superset of JavaScript that compiles to plain JavaScript.
--   PostCSS: A tool for transforming CSS with JavaScript plugins.
+- ESLint: A tool for identifying and reporting on patterns found in ECMAScript/JavaScript code.
+- TypeScript: A typed superset of JavaScript that compiles to plain JavaScript.
+- PostCSS: A tool for transforming CSS with JavaScript plugins.
 
 Conclusion
 This README provides an overview of the project, installation instructions, and details about the project structure and dependencies. If you have any questions or need further assistance, please refer to the documentation of the respective libraries or open an issue in the repository.

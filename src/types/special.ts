@@ -5,9 +5,9 @@ import type {
 	groupedSpecialResponseSchema,
 } from 'schemas';
 
-export interface newSpecialRequest
+export interface NewSpecialRequest
 	extends z.infer<typeof newSpecialRequestSchema> {}
-export interface newSpecialResponse
+export interface NewSpecialResponse
 	extends z.infer<typeof newSpecialResponseSchema> {}
-export interface groupedSpecialResponse
+export interface GroupedSpecialResponse
 	extends z.infer<typeof groupedSpecialResponseSchema> {}

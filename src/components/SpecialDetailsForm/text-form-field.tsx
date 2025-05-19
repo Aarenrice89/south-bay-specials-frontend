@@ -6,7 +6,7 @@ import {
 	FormHelperText,
 } from '@mui/material';
 
-import type { newSpecialRequest, NewSpecialTextFormFieldProps } from 'types';
+import type { NewSpecialRequest, NewSpecialTextFormFieldProps } from 'types';
 
 export default function TextFormField({
 	name,
@@ -17,7 +17,7 @@ export default function TextFormField({
 	const {
 		control,
 		formState: { errors },
-	} = useFormContext<newSpecialRequest>();
+	} = useFormContext<NewSpecialRequest>();
 
 	return (
 		<Controller

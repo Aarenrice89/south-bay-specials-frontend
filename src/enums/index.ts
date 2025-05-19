@@ -1,3 +1,5 @@
-import RequestState from './request-state';
+// import RequestState from './request-state';
+import paths from './paths';
+import { error, success } from './messages';
 
-export default RequestState;
+export { paths, error, success };

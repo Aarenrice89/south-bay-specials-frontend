@@ -5,6 +5,11 @@ const Endpoints = {
 	// testing
 	test: '/api/v1/ping/',
 
+	// auth
+	login: '/api/auth/',
+	refresh: '/api/auth/refresh/',
+	register: '/api/auth/register/',
+
 	// location
 	locations: (searchParams: string): ApiUrl => {
 		return `/api/v1/locations/?${searchParams}`;

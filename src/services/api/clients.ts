@@ -26,6 +26,19 @@ auxilaryClient.interceptors.request.use(reqSnakeCase);
 auxilaryClient.interceptors.response.use(resCamelCase, auxResErrorHandler);
 
 client.interceptors.request.use(reqSnakeCase);
+client.interceptors.request.use(
+	(config) => {
+		const token = localStorage.getItem('authTokens');
+		if (token) {
+			const parsedToken = JSON.parse(token);
+			// eslint-disable-next-line no-param-reassign
+			config.headers.Authorization = `Bearer ${parsedToken.access}`;
+		}
+		return config;
+	},
+	(error) => Promise.reject(error),
+);
+
 client.interceptors.response.use(resCamelCaseBypass, (error) =>
 	resErrorHandler(client, auxilaryClient, error),
 );

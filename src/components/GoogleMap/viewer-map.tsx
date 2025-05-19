@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useCallback, useEffect } from 'react';
 
 import {
@@ -69,9 +68,6 @@ function ExistingLocationGoogleMap() {
 		getLocations({ day }).then((response) => {
 			setMarkers(response.data);
 		});
-		// .catch((error) => {
-		// 	console.log('error', error);
-		// });
 	};
 
 	useEffect(() => {
