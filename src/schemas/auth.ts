@@ -20,3 +20,7 @@ export const loginUserResponse = z.object({
 	access: z.string(),
 	refresh: z.string(),
 });
+
+export const refreshToken = z.object({
+	refresh: z.string(),
+});

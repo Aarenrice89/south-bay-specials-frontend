@@ -21,6 +21,7 @@ import type {
 	LoginUser,
 	LoginUserResponse,
 	RegisterNewUserResponse,
+	RefreshToken,
 } from 'types';
 
 export const getTest = () => {
@@ -72,6 +73,6 @@ export const postLoginUser = (data: LoginUser) => {
 	return auxilaryClient.post<LoginUserResponse>(Endpoints.login, data);
 };
 
-export const postRefreshToken = (refreshToken: string) => {
-	return client.post<LoginUserResponse>(Endpoints.refresh, refreshToken);
+export const postRefreshToken = (data: RefreshToken) => {
+	return client.post<LoginUserResponse>(Endpoints.refresh, data);
 };

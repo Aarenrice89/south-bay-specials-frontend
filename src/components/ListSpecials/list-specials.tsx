@@ -21,9 +21,6 @@ export default function ListSpecials() {
 		getGroupedSpecials({ day }).then((response) => {
 			setData(response.data);
 		});
-		// .catch((error) => {
-		// 	console.log('error', error);
-		// });
 	};
 
 	useEffect(() => {
@@ -67,6 +64,7 @@ export default function ListSpecials() {
 									title={special.name ?? ''}
 									description={special.description}
 									limitations={special.limitations ?? ''}
+									key={`${location.location.googlePlaceId}-${special.name}`}
 								/>
 							))}
 						</Grid>

@@ -16,6 +16,7 @@ export type {
 	LoginUser,
 	RegisterNewUserResponse,
 	LoginUserResponse,
+	RefreshToken,
 } from 'types/auth';
 export type { User } from 'types/user';
 

@@ -68,9 +68,6 @@ function ExistingLocationGoogleMap() {
 		getLocations({ day }).then((response) => {
 			setMarkers(response.data);
 		});
-		// .catch((error) => {
-		// 	console.log('error', error);
-		// });
 	};
 
 	useEffect(() => {

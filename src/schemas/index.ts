@@ -15,5 +15,6 @@ export {
 	loginUser,
 	registerNewUserResponse,
 	loginUserResponse,
+	refreshToken,
 } from './auth';
 export { userSchema } from './user';

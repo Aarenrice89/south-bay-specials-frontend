@@ -57,7 +57,7 @@ export default function HeaderBar() {
 						onClick={() => navigate(paths.root)}
 					>
 						<img
-							src="../../../public/Logo.png"
+							src="Logo.png"
 							alt="Logo"
 							className="rounded-full"
 							style={{ width: 50, height: 50 }}

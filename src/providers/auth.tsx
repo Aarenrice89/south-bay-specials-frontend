@@ -41,24 +41,22 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 				? JSON.parse(localStorage.getItem('authTokens') as string)
 				: null,
 	);
-	const [loading, setLoading] = useState<boolean>(true);
 
 	const updateToken = useCallback(() => {
 		if (authTokens && authTokens.refresh) {
-			postRefreshToken(authTokens.refresh).then((response) => {
-				const responseData = response.data;
-				setUser(jwtDecode(responseData.access));
-				setAuthTokens(responseData);
-				localStorage.setItem(
-					'authTokens',
-					JSON.stringify(response.data),
-				);
-				if (loading) {
-					setLoading(false);
-				}
-			});
+			postRefreshToken({ refresh: authTokens.refresh }).then(
+				(response) => {
+					const responseData = response.data;
+					setUser(jwtDecode(responseData.access));
+					setAuthTokens(responseData);
+					localStorage.setItem(
+						'authTokens',
+						JSON.stringify(response.data),
+					);
+				},
+			);
 		}
-	}, [authTokens, loading]);
+	}, [authTokens]);
 
 	const authData: IAuthContext = useMemo(() => {
 		const isAuthenticated = !!localStorage.getItem('authTokens');
@@ -91,9 +89,6 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 	}, [authTokens, user]);
 
 	useEffect(() => {
-		if (loading) {
-			updateToken();
-		}
 		const fourMinutes = 1000 * 60 * 4;
 
 		const interval = setInterval(() => {
@@ -102,11 +97,9 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 			}
 		}, fourMinutes);
 		return () => clearInterval(interval);
-	}, [authTokens, loading, updateToken]);
+	}, [authTokens, updateToken]);
 
 	return (
-		<AuthContext.Provider value={authData}>
-			{loading ? null : children}
-		</AuthContext.Provider>
+		<AuthContext.Provider value={authData}>{children}</AuthContext.Provider>
 	);
 }

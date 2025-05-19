@@ -27,7 +27,7 @@ auxilaryClient.interceptors.response.use(resCamelCase, auxResErrorHandler);
 
 client.interceptors.request.use(reqSnakeCase);
 client.interceptors.request.use(
-	function (config) {
+	(config) => {
 		const token = localStorage.getItem('authTokens');
 		if (token) {
 			const parsedToken = JSON.parse(token);
@@ -36,9 +36,7 @@ client.interceptors.request.use(
 		}
 		return config;
 	},
-	function (error) {
-		return Promise.reject(error);
-	},
+	(error) => Promise.reject(error),
 );
 
 client.interceptors.response.use(resCamelCaseBypass, (error) =>
