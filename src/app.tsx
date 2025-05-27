@@ -3,15 +3,14 @@ import { createRoot } from 'react-dom/client';
 import { Outlet } from 'react-router-dom';
 import Router from 'navigation/router';
 
-import MainBody from 'components/layout/body';
 import GlobalWrapper from './components/global-wrapper';
 import './assets/styles/index.css';
-// import './assets/styles/output.css';
+import './assets/styles/output.css';
 import QueryClientProvider from './providers/query-client-provider';
 import AuthProvider from './providers/auth';
 
 function App() {
-	return <MainBody />;
+	return <Outlet />;
 }
 
 export default App;
@@ -24,7 +23,7 @@ export function renderToDom(container: HTMLElement) {
 				<AuthProvider>
 					<Router>
 						<GlobalWrapper>
-							<Outlet />
+							<App />
 						</GlobalWrapper>
 					</Router>
 				</AuthProvider>
