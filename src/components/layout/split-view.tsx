@@ -9,6 +9,8 @@ interface SplitViewProps {
 	left: React.ReactElement;
 	right: React.ReactElement;
 	className?: string;
+	classNameLeft?: string;
+	classNameDivider?: string;
 }
 
 const MIN_WIDTH = 500;
@@ -17,6 +19,8 @@ export default function SplitView({
 	left,
 	right,
 	className = '',
+	classNameLeft = '',
+	classNameDivider = '',
 }: SplitViewProps) {
 	const { leftWidth, setLeftWidth } = useSplitPanelContext();
 
@@ -90,11 +94,15 @@ export default function SplitView({
 			ref={splitPaneRef}
 			className={`body flex flex-row items-start ${className ?? ''}`}
 		>
-			<LeftPanel leftWidth={leftWidth} setLeftWidth={setLeftWidth}>
+			<LeftPanel
+				leftWidth={leftWidth}
+				setLeftWidth={setLeftWidth}
+				className={classNameLeft}
+			>
 				{left}
 			</LeftPanel>
 			<Divider
-				className="cursor-col-resize self-stretch items-center px-1 min-h-full"
+				className={`cursor-col-resize self-stretch items-center px-1 min-h-full ${classNameDivider}`}
 				onMouseDown={onMouseDown}
 				onTouchStart={onTouchStart}
 				onTouchEnd={onMouseUp}

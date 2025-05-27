@@ -4,12 +4,14 @@ interface LeftPanelProps {
 	leftWidth: number | undefined;
 	setLeftWidth: (value: number) => void;
 	children: React.ReactNode;
+	className?: string;
 }
 
 export default function LeftPanel({
 	children,
 	leftWidth,
 	setLeftWidth,
+	className = '',
 }: LeftPanelProps) {
 	const leftRef = createRef<HTMLDivElement>();
 
@@ -23,5 +25,9 @@ export default function LeftPanel({
 			leftRef.current.style.width = `${leftWidth}px`;
 		}
 	}, [leftRef, leftWidth, setLeftWidth]);
-	return <div ref={leftRef}>{children}</div>;
+	return (
+		<div ref={leftRef} className={className}>
+			{children}
+		</div>
+	);
 }

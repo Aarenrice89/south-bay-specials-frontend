@@ -84,7 +84,8 @@ function ExistingLocationGoogleMap() {
 					mapId={import.meta.env.REACT_APP_MAPS_ID_KEY}
 					defaultZoom={13}
 					defaultCenter={{ lat: 33.860664, lng: -118.4009608 }}
-					className="h-[calc(100vh-64px)] w-full"
+					className="h-screen w-full"
+					// className="h-[calc(100vh-64px)] w-full"
 					disableDefaultUI
 					onClick={onMapClick}
 				/>

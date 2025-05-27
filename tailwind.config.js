@@ -46,7 +46,7 @@ module.exports = {
 		lg: '1200px',
 		xl: '1536px',
 	},
-	plugins: [],
+	plugins: [require('tailwind-scrollbar')],
 	// important: '#root',
 	corePlugins: { preflight: false },
 };
