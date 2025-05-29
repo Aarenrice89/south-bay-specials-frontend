@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { getDayNames, getTimeValueSelect } from 'src/services/date-time-utils';
-import { locationSchema, locationBaseSchema } from './location';
+import { locationSchema } from './location';
 
 // Extract the values for the enums
 const dayOfWeekValues = getDayNames().map((day) => day.value);
@@ -24,6 +24,6 @@ export const newSpecialResponseSchema = specialBaseSchema.extend({
 });
 
 export const groupedSpecialResponseSchema = z.object({
-	location: locationBaseSchema,
+	location: locationSchema,
 	specials: z.array(specialBaseSchema),
 });

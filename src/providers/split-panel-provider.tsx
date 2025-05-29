@@ -6,6 +6,7 @@ import React, {
 	useState,
 	useMemo,
 } from 'react';
+import { type GroupedSpecialResponse } from 'types';
 
 interface ISplitPanelContext {
 	hoverId: string | null;
@@ -15,6 +16,10 @@ interface ISplitPanelContext {
 	leftWidth: undefined | number;
 	setLeftWidth: React.Dispatch<React.SetStateAction<undefined | number>>;
 	isMultiColumn: boolean;
+	specialData: GroupedSpecialResponse[];
+	setSpecialData: React.Dispatch<
+		React.SetStateAction<GroupedSpecialResponse[]>
+	>;
 }
 
 const initialContext: ISplitPanelContext = {
@@ -25,6 +30,8 @@ const initialContext: ISplitPanelContext = {
 	leftWidth: undefined,
 	setLeftWidth: () => undefined,
 	isMultiColumn: false,
+	specialData: [],
+	setSpecialData: () => undefined,
 };
 
 const MIN_WIDTH = 500;
@@ -52,6 +59,9 @@ export default function SplitPanelProvider({
 		startWidth({ vh: 50 }),
 	);
 	const [isMultiColumn, setIsMultiColumn] = useState<boolean>(false);
+	const [specialData, setSpecialData] = useState<GroupedSpecialResponse[]>(
+		[],
+	);
 
 	useEffect(() => {
 		const checkMultiColumn = () => {
@@ -76,6 +86,8 @@ export default function SplitPanelProvider({
 			leftWidth,
 			setLeftWidth,
 			isMultiColumn,
+			specialData,
+			setSpecialData,
 		};
 	}, [
 		hoverId,
@@ -85,6 +97,8 @@ export default function SplitPanelProvider({
 		leftWidth,
 		setLeftWidth,
 		isMultiColumn,
+		specialData,
+		setSpecialData,
 	]);
 
 	return (

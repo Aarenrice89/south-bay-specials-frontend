@@ -43,11 +43,36 @@ export const getLocations = (params: LocationsQueryParams) => {
 	);
 };
 
-export const getGroupedSpecials = (params: LocationsQueryParams) => {
+export const getGroupedSpecials = (
+	params: Partial<LocationsQueryParams> = {},
+) => {
+	const defaultParams: LocationsQueryParams = {
+		dayOfWeek: [],
+		search: '',
+	};
+	const mergedParams = { ...defaultParams, ...params };
+	// Ensure dayOfWeek values are lowercase
+	if (Array.isArray(mergedParams.dayOfWeek)) {
+		mergedParams.dayOfWeek = mergedParams.dayOfWeek.map((d) =>
+			typeof d === 'string' ? d.toLowerCase() : d,
+		);
+	}
 	const searchParams = new URLSearchParams();
-	Object.entries(params).forEach(([key, value]) => {
-		if (!isNil(value) && value !== '') {
-			searchParams.append(snakeCase(key), value as string);
+	Object.entries(mergedParams).forEach(([key, value]) => {
+		if (
+			!isNil(value) &&
+			!(
+				(typeof value === 'string' && value === '') ||
+				(Array.isArray(value) && value.length === 0)
+			)
+		) {
+			if (Array.isArray(value)) {
+				value.forEach((v) => {
+					searchParams.append(snakeCase(key), v as string);
+				});
+			} else {
+				searchParams.append(snakeCase(key), value as string);
+			}
 		}
 	});
 	return validateAsync(locationQueryParamsSchema, params).then(() =>

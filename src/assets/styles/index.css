@@ -83,7 +83,7 @@ header {
 }
 
 @layer utilities {
-	.scrollbar::-webkit-scrollbar {
+	/* .scrollbar::-webkit-scrollbar {
 		width: 15px;
 		height: 15px;
 	}
@@ -101,5 +101,5 @@ header {
 
 	.scrollbar::-webkit-scrollbar-thumb:hover {
 		background: #c0a0b9;
-	}
+	} */
 }

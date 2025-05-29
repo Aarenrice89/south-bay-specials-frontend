@@ -17,5 +17,6 @@ export const locationSchema = locationBaseSchema.extend({
 export const locationListSchema = z.array(locationSchema);
 
 export const locationQueryParamsSchema = z.object({
-	day: z.string().optional(),
+	dayOfWeek: z.array(z.string()).optional(),
+	search: z.string().optional(),
 });

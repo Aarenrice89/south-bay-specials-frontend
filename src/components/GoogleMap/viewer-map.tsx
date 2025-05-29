@@ -9,8 +9,7 @@ import {
 } from '@vis.gl/react-google-maps';
 import { Grid, IconButton } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
-import { getLocations } from 'src/services/api/methods';
-import { type FormattedLocation, type LocationsQueryParams } from 'types';
+import { type FormattedLocation } from 'types';
 import useSplitPanelContext from 'hooks/use-split-panel';
 import AdvancedMarkerWithRef from './advanced-marker-with-ref';
 
@@ -27,7 +26,8 @@ function ExistingLocationGoogleMap() {
 		useState<google.maps.marker.AdvancedMarkerElement | null>(null);
 	const [infoWindowShown, setInfoWindowShown] = useState(false);
 
-	const { hoverId, onMouseEnter, onMouseLeave } = useSplitPanelContext();
+	const { hoverId, onMouseEnter, onMouseLeave, specialData } =
+		useSplitPanelContext();
 
 	const onMarkerClick = useCallback(
 		(
@@ -62,17 +62,9 @@ function ExistingLocationGoogleMap() {
 		setSelectedId(null);
 	}, []);
 
-	const selectedDay = '';
-
-	const fetchLocationsByDay = ({ day }: LocationsQueryParams) => {
-		getLocations({ day }).then((response) => {
-			setMarkers(response.data);
-		});
-	};
-
 	useEffect(() => {
-		fetchLocationsByDay({ day: selectedDay });
-	}, [selectedDay]);
+		setMarkers(specialData.map((item) => item.location));
+	}, [specialData]);
 
 	return (
 		<div className="flex-grow rounded-l-md overflow-hidden">
@@ -85,7 +77,6 @@ function ExistingLocationGoogleMap() {
 					defaultZoom={13}
 					defaultCenter={{ lat: 33.860664, lng: -118.4009608 }}
 					className="h-screen w-full"
-					// className="h-[calc(100vh-64px)] w-full"
 					disableDefaultUI
 					onClick={onMapClick}
 				/>

@@ -1,60 +1,26 @@
 import * as React from 'react';
-import { type Theme, useTheme } from '@mui/material/styles';
 import {
-	OutlinedInput,
-	InputLabel,
-	MenuItem,
-	FormControl,
-	InputAdornment,
-	TextField,
-	Paper,
-	styled,
-	List,
-	// ListItem,
-	IconButton,
+	Accordion,
+	AccordionSummary,
+	AccordionDetails,
+	Checkbox,
+	FormControlLabel,
 	Typography,
-	Box,
-	ClickAwayListener,
+	InputBase,
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import ClearIcon from '@mui/icons-material/Clear';
-import Select, { type SelectChangeEvent } from '@mui/material/Select';
-import { noop } from 'lodash';
+import { Search, Clear, ExpandMore } from '@mui/icons-material';
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-	PaperProps: {
-		style: {
-			maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-			width: 250,
-		},
-	},
-};
-
-const Dropdown = styled(Paper)({
-	position: 'absolute',
-	top: '100%',
-	left: 0,
-	right: 0,
-	zIndex: 1000,
-	backgroundColor: 'white',
-	borderTop: '1px solid #d1d5db',
-	borderRadius: '0 0 4px 4px',
-	boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-	maxHeight: '200px',
-	overflowY: 'auto',
-});
-
-// const ListItemStyled = styled(ListItem)({
-// 	cursor: 'pointer',
-// 	'&:hover': {
-// 		backgroundColor: '#f0f0f0',
-// 	},
-// });
+interface SearchSpecialsProps {
+	search: string;
+	setSearch: (value: string) => void;
+	handleClear: () => void;
+}
+interface DayFilterSpecialsProps {
+	dayOfWeek: string[];
+	handleDayChange: (day: string) => void;
+}
 
 const days = [
-	'All',
 	'Monday',
 	'Tuesday',
 	'Wednesday',
@@ -62,160 +28,75 @@ const days = [
 	'Friday',
 	'Saturday',
 	'Sunday',
-	'Weekdays',
-	'Weekends',
+	'Weekday',
+	'Weekend',
 ];
-
-function getStyles(day: string, selectedDays: readonly string[], theme: Theme) {
-	const isSelected = selectedDays.includes(day);
-	return {
-		fontWeight: isSelected
-			? theme.typography.fontWeightMedium
-			: theme.typography.fontWeightRegular,
-		// backgroundColor: isSelected ? '#e5e5e5' : undefined,
-		// color: isSelected ? 'red' : undefined,
-	};
-}
-const handleClear = noop;
-
-const handleClickAway = noop;
-
-export function DayFilterSpecials() {
-	const theme = useTheme();
-	const [daysOfWeek, setDaysOfWeek] = React.useState<string[]>([]);
-
-	const handleChange = (event: SelectChangeEvent<typeof daysOfWeek>) => {
-		const {
-			target: { value },
-		} = event;
-		setDaysOfWeek(
-			// On autofill we get a stringified value.
-			typeof value === 'string' ? value.split(',') : value,
-		);
-	};
-
+export function DayFilterSpecials({
+	dayOfWeek,
+	handleDayChange,
+}: DayFilterSpecialsProps) {
 	return (
-		<div className="m-1 !w-[200px]">
-			<FormControl
-				fullWidth
-				variant="outlined"
-				size="small"
-				sx={{
-					'& .MuiInputLabel-root': { color: '#f3f4f6' }, // Tailwind gray-100
-					'& .MuiOutlinedInput-root': {
-						color: '#f3f4f6', // text color
-						backgroundColor: '#1f2937', // Tailwind gray-800
-						'& fieldset': {
-							borderColor: '#4b5563', // Tailwind gray-600
-						},
-						'&:hover fieldset': {
-							borderColor: '#d1d5db', // Tailwind gray-300
-						},
-						'&.Mui-focused fieldset': {
-							borderColor: '#60a5fa', // Tailwind blue-400
-						},
-					},
-					'& .MuiSvgIcon-root': { color: '#f3f4f6' }, // icon color
-				}}
+		<Accordion
+			className="!bg-gray-600 !text-gray-200 shadow-none my-2 border-0"
+			elevation={0}
+			sx={{
+				'&:before': { display: 'none' },
+				'&:after': { display: 'none' },
+			}}
+		>
+			<AccordionSummary
+				expandIcon={<ExpandMore className="text-gray-400" />}
+				aria-controls="panel1-content"
+				id="panel1-header"
 			>
-				<InputLabel id="multiple-day-label">
-					<Typography>Day</Typography>
-				</InputLabel>
-				<Select
-					labelId="multiple-day-label"
-					id="multiple-day"
-					multiple
-					value={daysOfWeek}
-					onChange={handleChange}
-					input={<OutlinedInput label="Day" />}
-					MenuProps={MenuProps}
-					defaultValue={['All']}
-				>
-					{days.map((day) => (
-						<MenuItem
-							key={day}
-							value={day}
-							style={getStyles(day, daysOfWeek, theme)}
-						>
-							{day}
-						</MenuItem>
-					))}
-				</Select>
-			</FormControl>
-		</div>
+				<Typography component="span" className="font-semibold">
+					Filter by Day
+				</Typography>
+			</AccordionSummary>
+			<AccordionDetails className="flex flex-col gap-1">
+				{days.map((day) => (
+					<FormControlLabel
+						key={day}
+						control={
+							<Checkbox
+								checked={dayOfWeek.includes(day)}
+								onChange={() => handleDayChange(day)}
+								sx={{
+									color: '#94a3b8',
+									'&.Mui-checked': {
+										color: '#38bdf8',
+									},
+								}}
+							/>
+						}
+						label={day}
+						className="!text-gray-200"
+					/>
+				))}
+			</AccordionDetails>
+		</Accordion>
 	);
 }
 
-export function SearchSpecials() {
+export function SearchSpecials({
+	search,
+	setSearch,
+	handleClear,
+}: SearchSpecialsProps) {
 	return (
-		<Box
-			className="pt-3 relative mx-auto"
-			// ref={containerRef}
-		>
-			<TextField
-				className={`bg-white shadow-md `}
-				variant="outlined"
-				placeholder="Search Specials"
-				// value={inputValue}
-				fullWidth
-				autoComplete="off"
-				// onInput={(event: FormEvent<HTMLInputElement>) =>
-				// 	onInputChange(event)
-				// }
-				// sx={{
-				// 	border: errors[name] ? '2px solid #f44336' : 'none',
-				// 	'& fieldset': {
-				// 		border: 'none',
-				// 	},
-				// }}
-				InputProps={{
-					startAdornment: (
-						<InputAdornment position="start">
-							<SearchIcon className="text-gray-500 hover:text-blue-400" />
-						</InputAdornment>
-					),
-					endAdornment: (
-						<IconButton
-							className="CustomClearButton hover:text-blue-400"
-							edge="end"
-							onClick={handleClear}
-						>
-							<ClearIcon />
-						</IconButton>
-					),
-					classes: {
-						notchedOutline: 'border-none',
-					},
-				}}
+		<div className="flex items-center bg-gray-600 rounded px-2 py-1 mb-2">
+			<Search className="text-gray-200 mr-2" fontSize="small" />
+			<InputBase
+				placeholder="Search specials"
+				value={search}
+				onChange={(e) => setSearch(e.target.value)}
+				className="w-full !placeholder-gray-200 !text-gray-200"
 			/>
-			<ClickAwayListener onClickAway={handleClickAway}>
-				<Dropdown className="overflow-x-hidden">
-					<List>
-						{/* {predictionResults.map(
-								({ place_id: googlePlaceId, description }) => {
-									return (
-										<ListItemStyled
-											key={googlePlaceId}
-											onClick={() =>
-												handleSuggestionClick(
-													googlePlaceId,
-												)
-											}
-											className="text-xs"
-										>
-											<Typography
-												variant="body2"
-												className="overflow-hidden truncate"
-											>
-												{description}
-											</Typography>
-										</ListItemStyled>
-									);
-								},
-							)} */}
-					</List>
-				</Dropdown>
-			</ClickAwayListener>
-		</Box>
+			<Clear
+				className="text-gray-400 mr-2 hover:text-blue-500"
+				fontSize="small"
+				onClick={handleClear}
+			/>
+		</div>
 	);
 }

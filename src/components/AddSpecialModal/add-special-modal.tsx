@@ -2,9 +2,10 @@ import React, { type Dispatch, type SetStateAction } from 'react';
 import { Button, Dialog, DialogContent, DialogTitle } from '@mui/material';
 import { useForm, FormProvider } from 'react-hook-form';
 
-import { postNewSpecial } from 'src/services/api/methods';
+import { postNewSpecial, getGroupedSpecials } from 'src/services/api/methods';
 import { type NewSpecialRequest } from 'types';
 import useNewLocationContext from 'hooks/use-new-location';
+import useSplitPanelContext from 'hooks/use-split-panel';
 import NewLocationGoogleMap from '../GoogleMap/new-location-map';
 import SpecialDetailsForm from '../SpecialDetailsForm/special-details';
 
@@ -16,6 +17,7 @@ function AddLocationModal({
 	setOpen: Dispatch<SetStateAction<boolean>>;
 }) {
 	const { setSelectedPlace, setInputValue } = useNewLocationContext();
+	const { setSpecialData } = useSplitPanelContext();
 
 	const formMethods = useForm<NewSpecialRequest>();
 
@@ -38,8 +40,12 @@ function AddLocationModal({
 			});
 			return;
 		}
-		postNewSpecial(data);
-		handleClearForm();
+		postNewSpecial(data).then(() => {
+			getGroupedSpecials().then((response) => {
+				setSpecialData(response.data);
+			});
+		});
+		handleClose();
 	};
 
 	return (
