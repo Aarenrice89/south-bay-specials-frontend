@@ -3,32 +3,22 @@ import {
 	IconButton,
 	Tooltip,
 	Menu,
-	Accordion,
-	AccordionSummary,
-	AccordionDetails,
 	Typography,
-	Checkbox,
-	FormControlLabel,
-	InputBase,
 	Button,
 	Divider,
 } from '@mui/material';
-import { FilterList, Search, ExpandMore } from '@mui/icons-material';
-
-const days = [
-	'Monday',
-	'Tuesday',
-	'Wednesday',
-	'Thursday',
-	'Friday',
-	'Saturday',
-	'Sunday',
-];
+import { FilterList } from '@mui/icons-material';
+import useSplitPanelContext from 'hooks/use-split-panel';
+import { getGroupedSpecials } from 'src/services/api/methods';
+import { type LocationsQueryParams } from 'types';
+import { SearchSpecials, DayFilterSpecials } from './header-components';
 
 export default function HeaderFilter() {
 	const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-	const [selectedDays, setSelectedDays] = useState<string[]>([]);
+	const [dayOfWeek, setDayOfWeek] = useState<string[]>([]);
 	const [search, setSearch] = useState('');
+
+	const { setSpecialData } = useSplitPanelContext();
 
 	const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorElUser(event.currentTarget);
@@ -39,13 +29,25 @@ export default function HeaderFilter() {
 	};
 
 	const handleDayChange = (day: string) => {
-		setSelectedDays((prev) =>
+		setDayOfWeek((prev) =>
 			prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day],
 		);
 	};
 
+	const fetchFilteredSpecials = (params: LocationsQueryParams) => {
+		getGroupedSpecials(params).then((response) => {
+			setSpecialData(response.data);
+		});
+	};
+
 	const handleFilter = () => {
-		// Perform filter action here
+		fetchFilteredSpecials({ dayOfWeek, search });
+		handleClose();
+	};
+
+	const handleClear = () => {
+		setSearch('');
+		fetchFilteredSpecials({ dayOfWeek, search: '' });
 		handleClose();
 	};
 
@@ -81,85 +83,34 @@ export default function HeaderFilter() {
 				slotProps={{
 					paper: {
 						className:
-							'!bg-gray-600 text-gray-100 min-w-[340px] px-12 py-2 flex flex-col',
+							'!bg-gray-600 text-gray-100 min-w-[340px] px-12 py-2 flex flex-col scrollbar scrollbar-thumb-gray-400 scrollbar-track-gray-100',
 						style: {
 							borderRadius: 16,
 							boxShadow: '0px 3px 12px rgba(0,0,0,0.15)',
-							maxHeight: 420, // clamp menu height
+							maxHeight: '60vh', // clamp menu height
 							display: 'flex',
 							flexDirection: 'column',
 						},
 					},
 				}}
 			>
-				{/* Non-scrollable header */}
-				<div>
-					<div className="flex items-center bg-gray-600 rounded px-2 py-1 mb-2">
-						<Search
-							className="text-gray-200 mr-2"
-							fontSize="small"
-						/>
-						<InputBase
-							placeholder="Search specials"
-							value={search}
-							onChange={(e) => setSearch(e.target.value)}
-							className="w-full !placeholder-gray-100 !text-gray-100"
-						/>
-					</div>
+				<div className="flex-1 min-h-0">
+					{/* Search Bar */}
+					<SearchSpecials
+						search={search}
+						setSearch={setSearch}
+						handleClear={handleClear}
+					/>
 					<Divider className="!bg-gray-100 !mb-4" />
-				</div>
-				{/* Scrollable content */}
-				<div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-600 rounded-r-2xl">
-					<Accordion
-						className="!bg-gray-600 !text-gray-200 shadow-none my-2 border-0"
-						elevation={0}
-						sx={{
-							'&:before': { display: 'none' },
-							'&:after': { display: 'none' },
-						}}
-					>
-						<AccordionSummary
-							expandIcon={
-								<ExpandMore className="text-gray-400" />
-							}
-							aria-controls="panel1-content"
-							id="panel1-header"
-						>
-							<Typography
-								component="span"
-								className="font-semibold"
-							>
-								Filter by Day
-							</Typography>
-						</AccordionSummary>
-						<AccordionDetails className="flex flex-col gap-1">
-							{days.map((day) => (
-								<FormControlLabel
-									key={day}
-									control={
-										<Checkbox
-											checked={selectedDays.includes(day)}
-											onChange={() =>
-												handleDayChange(day)
-											}
-											sx={{
-												color: '#94a3b8',
-												'&.Mui-checked': {
-													color: '#38bdf8',
-												},
-											}}
-										/>
-									}
-									label={day}
-									className="!text-gray-100"
-								/>
-							))}
-						</AccordionDetails>
-					</Accordion>
+					{/* DOW Filter */}
+					<DayFilterSpecials
+						dayOfWeek={dayOfWeek}
+						handleDayChange={handleDayChange}
+					/>
 				</div>
 				<Divider className="!bg-gray-100 !mb-4" />
 				{/* Sticky footer */}
-				<div className="sticky bottom-0 inset-x-0 bg-gray-600 z-10 !mt-8">
+				<div className="sticky bottom-0 inset-x-0 bg-gray-600 z-10">
 					<Button
 						variant="outlined"
 						color="inherit"

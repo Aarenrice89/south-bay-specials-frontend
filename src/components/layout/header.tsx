@@ -17,7 +17,6 @@ import { paths } from 'enums';
 import useAuthContext from 'hooks/use-auth';
 import NewLocationProvider from 'providers/new-location-provider';
 import AddSpecialModal from '../AddSpecialModal/add-special-modal';
-// import { SearchSpecials, DayFilterSpecials } from './header-components';
 import HeaderFilter from './header-filter';
 
 export default function HeaderBar() {
@@ -61,7 +60,7 @@ export default function HeaderBar() {
 		<div className="m-2 rounded-2xl shadow-lg bg-transparent">
 			<AppBar
 				position="static"
-				className="!bg-gray-800 rounded-2xl w-auto min-h-[68px] px-2"
+				className="!bg-gray-800 rounded-2xl w-auto px-2"
 				elevation={4}
 			>
 				<Container maxWidth="xl">
