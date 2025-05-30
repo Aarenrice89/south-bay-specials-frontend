@@ -1,11 +1,11 @@
 import {
-	type AxiosInstance,
 	type AxiosError,
 	type AxiosResponse,
 	type InternalAxiosRequestConfig,
 } from 'axios';
-import { get, has, includes, noop } from 'lodash';
+import { get, includes, noop } from 'lodash';
 import { objectToSnake, objectToCamel as tsToCamel } from 'ts-case-convert';
+import { paths } from 'enums';
 
 const objectToCamel = (data: unknown) => {
 	if (typeof data === 'object' && data !== null) {
@@ -14,10 +14,6 @@ const objectToCamel = (data: unknown) => {
 
 	return data;
 };
-
-// interface AxiosRequestConfigRetryable extends InternalAxiosRequestConfig {
-// 	isRetry?: boolean;
-// }
 
 declare module 'axios' {
 	export interface AxiosRequestConfig {
@@ -38,10 +34,6 @@ const resCamelCaseBypass = (response: AxiosResponse) => {
 };
 
 const beginLogout = (): Promise<never> => {
-	// if (window.location.pathname !== paths.logout) {
-	//     window.location.pathname = paths.logout
-	// }
-
 	return new Promise(noop);
 };
 
@@ -56,40 +48,15 @@ const auxResErrorHandler = (error: Error | AxiosError) => {
 	return beginLogout();
 };
 
-const resErrorHandler = (
-	client: AxiosInstance,
-	auxClient: AxiosInstance,
-	error: Error | AxiosError,
-) => {
+const resErrorHandler = (error: Error | AxiosError) => {
 	const isAxiosError = get(error, 'isAxiosError', false);
-	if (!isAxiosError) {
+	const status: number | false = get(error, 'response.status', false);
+	if (!isAxiosError || includes([401, 403], status)) {
+		localStorage.removeItem('authTokens');
+		window.location.href = paths.root;
 		return Promise.reject(error);
 	}
-
-	const { response, config: originalRequest } = error as AxiosError;
-	const shouldRetry = originalRequest !== undefined;
-	if (!shouldRetry) {
-		return Promise.reject(error);
-	}
-
-	if (!has(response, 'data') || !has(response, 'status')) {
-		return Promise.reject(error);
-	}
-
-	const { data, status } = response;
-
-	if (
-		!includes([401, 403], status) ||
-		(shouldRetry && get(originalRequest, 'isRetry', false))
-	) {
-		const modifiedError = {
-			...error,
-			response: { ...response, data: objectToCamel(data) },
-		};
-		return Promise.reject(modifiedError);
-	}
-
-	return Promise.resolve(client(originalRequest));
+	return beginLogout();
 };
 
 export {

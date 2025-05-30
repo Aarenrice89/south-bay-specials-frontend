@@ -4,10 +4,9 @@ import React, {
 	useEffect,
 	useMemo,
 	type ReactNode,
-	useCallback,
 } from 'react';
 import { jwtDecode } from 'jwt-decode';
-import { postLoginUser, postRefreshToken } from 'src/services/api/methods';
+import { postLoginUser } from 'src/services/api/methods';
 import { type User, type LoginUser, type LoginUserResponse } from 'types';
 import { paths } from 'enums';
 
@@ -42,22 +41,6 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 				: null,
 	);
 
-	const updateToken = useCallback(() => {
-		if (authTokens && authTokens.refresh) {
-			postRefreshToken({ refresh: authTokens.refresh }).then(
-				(response) => {
-					const responseData = response.data;
-					setUser(jwtDecode(responseData.access));
-					setAuthTokens(responseData);
-					localStorage.setItem(
-						'authTokens',
-						JSON.stringify(response.data),
-					);
-				},
-			);
-		}
-	}, [authTokens]);
-
 	const authData: IAuthContext = useMemo(() => {
 		const isAuthenticated = !!localStorage.getItem('authTokens');
 
@@ -89,15 +72,10 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 	}, [authTokens, user]);
 
 	useEffect(() => {
-		const fourMinutes = 1000 * 60 * 4;
-
-		const interval = setInterval(() => {
-			if (authTokens) {
-				updateToken();
-			}
-		}, fourMinutes);
-		return () => clearInterval(interval);
-	}, [authTokens, updateToken]);
+		if (authTokens) {
+			setUser(jwtDecode(authTokens.access));
+		}
+	}, [authTokens]);
 
 	return (
 		<AuthContext.Provider value={authData}>{children}</AuthContext.Provider>
