@@ -1,7 +1,7 @@
 import { type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import { get, isNil } from 'lodash';
 import { type ZodType } from 'zod';
-import { client } from './clients';
+import { client, auxClient } from './clients';
 import { validate } from './validate';
 
 type ZodGet = <T>(
@@ -24,7 +24,7 @@ type ZodPatch = ZodPost;
 const zodGet: ZodGet = (url, schema, config, path) => {
 	const dataPath = isNil(path) ? 'data' : path;
 
-	return client
+	return auxClient
 		.get(url, config)
 		.then((response) => {
 			response.data = validate(schema, get(response, dataPath), false);

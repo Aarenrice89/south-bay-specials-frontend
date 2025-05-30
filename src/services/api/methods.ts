@@ -10,7 +10,7 @@ import {
 import Endpoints from './endpoints';
 import { zodGet, zodPost } from './zod-methods';
 import { validateAsync } from './validate';
-import { auxilaryClient, client } from './clients';
+import { auxClient, client } from './clients';
 import type {
 	PingResponse,
 	FormattedLocation,
@@ -88,14 +88,11 @@ export const postNewSpecial = (data: NewSpecialRequest) => {
 };
 
 export const postRegisterNewUser = (data: RegisterNewUser) => {
-	return auxilaryClient.post<RegisterNewUserResponse>(
-		Endpoints.register,
-		data,
-	);
+	return auxClient.post<RegisterNewUserResponse>(Endpoints.register, data);
 };
 
 export const postLoginUser = (data: LoginUser) => {
-	return auxilaryClient.post<LoginUserResponse>(Endpoints.login, data);
+	return auxClient.post<LoginUserResponse>(Endpoints.login, data);
 };
 
 export const postRefreshToken = (data: RefreshToken) => {

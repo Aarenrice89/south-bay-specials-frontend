@@ -1,46 +1,68 @@
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
+import dayjs from 'dayjs';
 
 import { BASE_URL, TIMEOUT } from './constants';
+import Endpoints from './endpoints';
 import {
 	auxResErrorHandler,
 	reqSnakeCase,
 	resCamelCase,
-	resCamelCaseBypass,
 	resErrorHandler,
 } from './interceptors';
+import type { LoginUserResponse } from 'types';
 
-const auxilaryClient = axios.create({
+const auxClient = axios.create({
 	baseURL: BASE_URL,
 	timeout: TIMEOUT,
 	withCredentials: true,
 });
+
+let authTokens = localStorage.getItem('authTokens')
+	? JSON.parse(localStorage.getItem('authTokens') as string)
+	: null;
 
 const client = axios.create({
 	baseURL: BASE_URL,
 	timeout: TIMEOUT,
 	withCredentials: true,
+	headers: { Authorization: `Bearer ${authTokens?.access}` },
 });
 
 // attach interceptors
-auxilaryClient.interceptors.request.use(reqSnakeCase);
-auxilaryClient.interceptors.response.use(resCamelCase, auxResErrorHandler);
+auxClient.interceptors.request.use(reqSnakeCase);
+auxClient.interceptors.response.use(resCamelCase, auxResErrorHandler);
 
 client.interceptors.request.use(reqSnakeCase);
-client.interceptors.request.use(
-	(config) => {
-		const token = localStorage.getItem('authTokens');
-		if (token) {
-			const parsedToken = JSON.parse(token);
-			// eslint-disable-next-line no-param-reassign
-			config.headers.Authorization = `Bearer ${parsedToken.access}`;
-		}
-		return config;
-	},
-	(error) => Promise.reject(error),
-);
+client.interceptors.request.use(async (req) => {
+	if (!authTokens) {
+		authTokens = localStorage.getItem('authTokens')
+			? JSON.parse(localStorage.getItem('authTokens') as string)
+			: null;
+		req.headers.Authorization = `Bearer ${authTokens?.access}`;
+	}
 
-client.interceptors.response.use(resCamelCaseBypass, (error) =>
-	resErrorHandler(client, auxilaryClient, error),
-);
+	const user = jwtDecode(authTokens.access) as { exp?: number };
+	const isExpired =
+		typeof user.exp === 'number'
+			? dayjs.unix(user.exp).diff(dayjs()) < 1
+			: true;
 
-export { client, auxilaryClient };
+	if (!isExpired) return req;
+
+	// Wait for the refresh to complete and update the token
+	const response = await auxClient.post<LoginUserResponse>(
+		Endpoints.refresh,
+		{
+			refresh: authTokens.refresh,
+		},
+	);
+	localStorage.setItem('authTokens', JSON.stringify(response.data));
+	authTokens = response.data;
+	req.headers.Authorization = `Bearer ${response.data.access}`;
+	return req;
+});
+
+client.interceptors.response.use(resCamelCase, resErrorHandler);
+
+export { client, auxClient };
